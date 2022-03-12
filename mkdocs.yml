@@ -1,0 +1,10 @@
+site_name: pytest-splunk-soar-connectors
+site_description: A simple plugin to use with pytest
+site_author: Daniel Federschmidt
+
+theme: readthedocs
+
+repo_url: https://github.com/dfederschmidt/pytest-splunk-soar-connectors
+
+pages:
+- Home: index.md
