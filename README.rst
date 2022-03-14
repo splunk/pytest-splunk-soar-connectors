@@ -10,10 +10,6 @@ pytest-splunk-soar-connectors
     :target: https://pypi.org/project/pytest-splunk-soar-connectors
     :alt: Python versions
 
-.. image:: https://ci.appveyor.com/api/projects/status/github/dfederschmidt/pytest-splunk-soar-connectors?branch=master
-    :target: https://ci.appveyor.com/project/dfederschmidt/pytest-splunk-soar-connectors/branch/master
-    :alt: See Build Status on AppVeyor
-
 A simple plugin to use with pytest
 
 ----
