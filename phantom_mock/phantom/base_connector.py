@@ -1,49 +1,21 @@
-# -*- coding: utf-8 -*-
-
-import pytest
-
-
-def pytest_addoption(parser):
-    group = parser.getgroup('splunk_soar')
-    group.addoption(
-        '--foo',
-        action='store',
-        dest='dest_foo',
-        default='2022',
-        help='Set the value for the fixture "bar".'
-    )
-
-    parser.addini('HELLO', 'Dummy pytest.ini setting')
-
-
-import sys
-import pprint
-import logging
 import json
-from tempfile import NamedTemporaryFile, TemporaryDirectory, TemporaryFile
+import logging
+import uuid
+from rich.logging import RichHandler
+import sys
+import glob
+import inspect
 import os
-
-def fwlib_sum(a, b):
-    return a + b
-
-module = type(sys)('phantom')
-sys.modules['phantom'] = module
-import phantom
-
-module = type(sys)('phantom.app')
-module.APP_ERROR  = False
-module.APP_SUCCESS  = True
-module.is_fail = lambda x: True if x else False
-
-sys.modules['phantom.app'] = module
-import phantom.app
+import pprint
+from tempfile import NamedTemporaryFile, TemporaryDirectory
+from . import app as phantom
 
 class BaseConnector(object):
 
     def __init__(self):
         # asset configuration settings
         self.config = {}
-        self.__action_results = []
+        self.action_results = []
 
         # other asset settings
         self.asset_id = '1abc234'
@@ -91,13 +63,18 @@ class BaseConnector(object):
         self.action_results = []
         self.pp = pprint.PrettyPrinter(indent=4)
         self.action_identifier = ''
+        self.__action_run_id = str(uuid.uuid4())
+
+        # test helpers
+        self.progress = []
 
         return
 
     def _setup_logger(self):
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s %(name)s %(levelname)s %(message)s',
+            format='%(message)s',
+            datefmt="[%X]",
             filename=(self.log_path or 'debug_log.log'),
             filemode='a'
         )
@@ -105,15 +82,12 @@ class BaseConnector(object):
 
         # Add console output if configured
         if self.log_to_console:
-            console = logging.StreamHandler(sys.stdout)
-            console.setLevel(logging.INFO)
-            console.setFormatter(logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s'))
-            self.logger.addHandler(console)
+            self.logger.addHandler(RichHandler())
 
     def _config_parser_to_dict(self, config_parser):
         return {s: dict(config_parser.items(s)) for s in config_parser.sections()}
 
-    def get_config(self):
+    def get_config(self) -> dict:
         return self.config
 
     def get_phantom_base_url(self):
@@ -186,7 +160,7 @@ class BaseConnector(object):
     def set_status(self, status, message=None, error=None):
         self.status = status
         self.message = message
-        self.logger.info('BaseConnector.set_status - State: {}; Message: {}; Exception: {}'.format(status, message, str(error)))
+        self.logger.info('BaseConnector.set_status - State: {}; Message: {};'.format(status, message))
         return status
 
     def append_to_message(self, message):
@@ -207,6 +181,7 @@ class BaseConnector(object):
 
     def save_progress(self, message, more=None):
         self.progress_message = message
+        self.progress.append(message)
         self.logger.info('BaseConnector.save_progress - Progress: {}; More: {}'.format(message, more))
         return
 
@@ -230,6 +205,12 @@ class BaseConnector(object):
     def get_app_id(self):
         return self.app_id
 
+    def get_app_config(self):
+        return self.__app_config
+
+    def get_app_json(self):
+        return self.__app_json
+
     def get_asset_id(self):
         return self.asset_id
         
@@ -237,10 +218,79 @@ class BaseConnector(object):
         # TODO: Make this do something. For now, it does nothing
         return None
 
+    def _is_app_json(self, json_file_path, connector_py):
+
+        self.debug_print("Connector class File: {0}".format(connector_py))
+        # Load the file
+        with open(json_file_path) as app_json_file:
+            try:
+                app_json = json.load(app_json_file)
+                connector_file = app_json.get("main_module")  # pylint: disable=E1103
+                if connector_file:
+                    connector_file = connector_file[: connector_file.find(".")]
+                    if connector_file == connector_py:
+                        self.__app_json = app_json
+                        return True
+            except Exception as e:
+                self.debug_print(
+                    "Failed to load JSON: {0}, reason: {1}".format(
+                        json_file_path,
+                        getattr(e, "message", str(e))
+                    )
+                )
+                return False
+
+        return False
+
+
+    def _load_app_json(self):
+        dirpath = os.path.dirname(inspect.getfile(self.__class__))
+        # get the directory of the derived class
+        dirpath = os.path.dirname(inspect.getfile(self.__class__))
+        self.debug_print("Derived class dir: '{}'".format(dirpath))
+        if not dirpath:
+            dirpath = os.curdir
+
+        # Create the glob to the json file
+        json_file_glob = "{0}/*.json".format(dirpath)
+
+        # Check if it exists
+        files_matched = glob.glob(json_file_glob)
+
+        # Get the connector file
+        connector_py_file = inspect.getfile(self.__class__)
+        self.debug_print('connector_py_file: {0}'.format(connector_py_file))
+
+        # Split into head and tail
+        connector_py = os.path.split(connector_py_file)
+
+        # get the tail, which will be the file name
+        connector_py = connector_py[1]
+
+        self.debug_print('connector_py: {0}'.format(connector_py))
+
+        # The extension of the file could be pyc or py
+        connector_py = connector_py[: connector_py.find(".")]
+
+        json_file = None
+        for file_path in files_matched:
+            if self._is_app_json(file_path, connector_py):
+                json_file = file_path
+                break
+
+        if json_file is None:
+            return self.set_status(phantom.APP_ERROR, "Could not load Connector")
+
+        self.debug_print('App Json:', self.__app_json)
+
+        return phantom.APP_SUCCESS
+
+
     def _handle_action(self, in_json, handle) -> str:
         self.__action_json = json.loads(in_json)
+        self._load_app_json()
         with TemporaryDirectory() as tmp_dir:
-            self.get_state_dir = lambda: tmp_dir
+            self.get_state_dir = tmp_dir
             for param in self.__action_json['parameters']:
                 self.__current_param = param
                 try:
@@ -253,72 +303,10 @@ class BaseConnector(object):
                     logging.exception(error)
                     self.handle_exception(error)
 
-        return json.dumps(list(r.get_dict() for r in self.__action_results))
+        self.logger.info(json.dumps(list(r.get_dict() for r in self.action_results)))
+        return json.dumps(list(r.get_dict() for r in self.action_results))
 
     def handle_exception(self, exception: Exception):
         raise exception
 
 
-module = type(sys)('phantom.base_connector')
-module.BaseConnector  = BaseConnector
-sys.modules['phantom.base_connector'] = module
-
-
-class ActionResult():
-    def __init__(self, param=None):
-        self.param = param
-        self.message = ''
-        self.status = False
-        self.data = []
-        self.summary = {}
-        self.logger = None
-        self.pp = pprint.PrettyPrinter(indent=4)
-        return
-
-    def set_logger(self, logger):
-        self.logger = logger
-
-    def get_message(self):
-        return self.message
-
-    def set_status(self, status, message=None, error=None):
-        self.status = status
-        self.message = message
-        self.logger.info('ActionResult.set_status() - Status: {}; Message: {}; Exception: {}'.format(status, message, str(error)))
-        return status
-
-    def add_data(self, data):
-        self.data.append(data)
-        self.logger.info('ActionResult.add_data() - Data (next line):\n{}'.format(self.pp.pformat(self.data)))
-        return
-
-    def get_data(self):
-        return self.data
-
-    def update_summary(self, summary):
-        self.summary = summary
-        self.logger.info('ActionResult.update_summary() - Summary (next line):\n{}'.format(self.pp.pformat(summary)))
-        return self.summary
-
-    def set_summary(self, summary):
-        self.update_summary(summary)
-        return
-
-    def get_status(self):
-        return self.status
-
-
-
-
-module = type(sys)('phantom.action_result')
-module.ActionResult  = ActionResult
-sys.modules['phantom.action_result'] = module
-import phantom.action_result
-
-module = type(sys)('phantom.action_result')
-module.ActionResult  = ActionResult
-sys.modules['phantom.action_result'] = module
-
-
-module = type(sys)('phantom.rules')
-sys.modules['phantom.rules'] = module

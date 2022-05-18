@@ -2,9 +2,25 @@ site_name: pytest-splunk-soar-connectors
 site_description: A simple plugin to use with pytest
 site_author: Daniel Federschmidt
 
-theme: material
+theme: 
+  name: material
+  icon:
+    logo: material/snake
+  palette:
+    scheme: slate
+    primary: green
+  features:
+    - navigation.tabs
 
 repo_url: https://github.com/dfederschmidt/pytest-splunk-soar-connectors
 
 pages:
-- Home: index.md
+- Home:
+  - Overview: index.md
+  - Getting Started: getting_started.md
+
+- Guides:
+  - Overview: guides/index.md
+  - Using requests-mock: guides/using_requests_mock.md
+  - Using VCR.py: guides/using_vcrpy.md
+- Reference: reference/index.md

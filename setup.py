@@ -24,7 +24,7 @@ setup(
     long_description=read('README.rst'),
     py_modules=['pytest_splunk_soar_connectors'],
     python_requires='>=3.5',
-    install_requires=['pytest>=3.5.0'],
+    install_requires=['pytest>=3.5.0', 'rich'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Pytest',
