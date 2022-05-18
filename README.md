@@ -1,41 +1,20 @@
-=============================
-pytest-splunk-soar-connectors
-=============================
+# pytest-splunk-soar-connectors
 
-.. image:: https://img.shields.io/pypi/v/pytest-splunk-soar-connectors.svg
-    :target: https://pypi.org/project/pytest-splunk-soar-connectors
-    :alt: PyPI version
+A plugin to perform unit testing for Splunk SOAR Apps. 
 
-.. image:: https://img.shields.io/pypi/pyversions/pytest-splunk-soar-connectors.svg
-    :target: https://pypi.org/project/pytest-splunk-soar-connectors
-    :alt: Python versions
+## Features
 
-A simple plugin to use with pytest
+* Mocks for most Splunk SOAR Python App Authoring APIs, especially `BaseConnector`
 
-----
+## Installation
 
-This `pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`_'s `cookiecutter-pytest-plugin`_ template.
+It is recommended to create a virtual environment for the App under test. Run the below commands to install the package locally into the python environment.
 
-
-Features
---------
-
-* TODO
-
-
-Requirements
-------------
-
-* TODO
-
-
-Installation
-------------
-
-You can install "pytest-splunk-soar-connectors" via `pip`_ from `PyPI`_::
-
-    $ pip install pytest-splunk-soar-connectors
-
+```
+git clone https://github.com/dfederschmidt/pytest-splunk-soar-connectors
+cd pytest-splunk-soar-connectors
+pip install -e .
+```
 
 Usage
 -----
