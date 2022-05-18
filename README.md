@@ -16,8 +16,11 @@ cd pytest-splunk-soar-connectors
 pip install -e .
 ```
 
-## Documentation
+## Usage
 
+Please refer to the documentation in `docs` or consider following the [Building the Documentation](#building-the-documentation) section to get a local docs server up and running.
+
+## Building the Documentation
 
 ```
 python3 -m venv venv
