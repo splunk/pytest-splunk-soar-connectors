@@ -394,9 +394,40 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Using VCR.py
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Using VCR.py
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example-test" class="md-nav__link">
+    Example Test
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -444,6 +475,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example-test" class="md-nav__link">
+    Example Test
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -461,6 +507,31 @@
 
 
 <h1 id="using-vcrpy">Using VCR.py</h1>
+<p>Using the <a href="https://vcrpy.readthedocs.io/en/latest/usage.html">VCR.py</a> library may be appropriate if you have access to the remote system in your lab environment from your local laptop, but don't want to configure it within your CI pipeline.</p>
+<p>By running pytest in different <em>record modes</em>, VCR.py can save network responses to <em>cassettes</em> that can be committed to version control.</p>
+<h2 id="example-test">Example Test</h2>
+<p>Running the below test for the first time with a configured connector pointing to a live instance of Redmine, will create a new <code>cassettes/</code> directory in the <code>tests</code> folder. Within this folder, a local copy of the <code>list_tickets</code> API response will be saved. On following executions, pytest will not do network requests but use the local copy instead.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please ensure that your local copies don't contain sensitive informations such as cookie values, API tokens, passwords. Review the VCR.py documentation on how to scrub sensitive information from your local copy. </p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">vcr</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">test_list_tickets_vcrpy</span><span class="p">(</span><span class="n">configured_connector</span><span class="p">:</span> <span class="n">RedmineConnector</span><span class="p">):</span>
+
+    <span class="c1"># Configure action parameters</span>
+    <span class="n">in_json</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span> <span class="s2">&quot;list_tickets&quot;</span>
+            <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Execute Action</span>
+    <span class="n">action_result_str</span> <span class="o">=</span> <span class="n">configured_connector</span><span class="o">.</span><span class="n">_handle_action</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">in_json</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">action_result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">action_result_str</span><span class="p">)</span>
+
+    <span class="c1"># Assertion</span>
+    <span class="k">assert</span> <span class="s2">&quot;issues&quot;</span> <span class="ow">in</span> <span class="n">action_result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
 
               
             </article>

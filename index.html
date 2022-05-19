@@ -336,42 +336,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    Limitations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
     Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    Quick Start
-  </a>
-  
-    <nav class="md-nav" aria-label="Quick Start">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    Installation
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#connector-fixture" class="md-nav__link">
-    Connector Fixture
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mocking-network-calls" class="md-nav__link">
-    Mocking Network Calls
   </a>
   
 </li>
@@ -530,42 +503,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    Limitations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
     Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    Quick Start
-  </a>
-  
-    <nav class="md-nav" aria-label="Quick Start">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    Installation
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#connector-fixture" class="md-nav__link">
-    Connector Fixture
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mocking-network-calls" class="md-nav__link">
-    Mocking Network Calls
   </a>
   
 </li>
@@ -600,95 +546,14 @@ can be tested in total isolation, without a development SOAR instance or even ac
 <li>Work well with existing connector implementations</li>
 <li>Create test suites that can run as part of CI </li>
 </ul>
+<h2 id="limitations">Limitations</h2>
+<ul>
+<li>Vault interaction is currently not fully implemented (WIP)</li>
+</ul>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Python3 (3.7, 3.8, 3.9, 3.10)</li>
+<li>Python 3 (3.7, 3.8, 3.9, 3.10)</li>
 </ul>
-<h2 id="quick-start">Quick Start</h2>
-<p>As this plugin is not yet published to the Python Package Index (PyPi) we'll outline the steps needed to install the plugin from its Github repository. </p>
-<p>It is strongly recommended to install this package in your projects <a href="https://docs.python.org/3/library/venv.html#:~:text=A%20virtual%20environment%20is%20a,part%20of%20your%20operating%20system.">virtual environment</a> as part of your local development. The commands below assume you are located in the the SOAR connectors root directory. If you already have an existing virtual environment, you can skip these steps.</p>
-<h3 id="installation">Installation</h3>
-<pre><code class="language-bash">python3 -m venv venv
-source venv/bin/activate
-pip install git+https://github.com/splunk/pytest-splunk-soar-connectors
-</code></pre>
-<h3 id="connector-fixture">Connector Fixture</h3>
-<p>Create a <code>tests</code> directory in the root of your connector project if you have not already and create a <code>conftest.py</code> within.</p>
-<pre><code>mkdir tests &amp;&amp; cd tests
-touch conftest.py
-</code></pre>
-<p>Open the created <code>conftest.py</code> in your favorite editor and create a new <a href="https://docs.pytest.org/en/6.2.x/fixture.html">pytest fixture</a> for your connector. The example below uses the Connector from the <a href="https://github.com/splunk-soar-connectors/dns">DNS App</a>.</p>
-<pre><code class="language-python">import os
-import sys
-import logging
-
-# Add root directory to path
-sys.path.insert(0, os.getcwd()) 
-
-import pytest
-# Load pytest-splunk-soar-connectors plugin
-pytest_plugins = (&quot;splunk-soar-connectors&quot;)
-
-# Replace this with the import for your connector
-from dns_connector import DNSConnector
-
-@pytest.fixture(scope='function')
-def configured_connector():
-    conn = DNSConnector()
-
-    # Define the asset configuration to be used 
-    conn.config = {
-        &quot;dns_server&quot;: &quot;8.8.8.8&quot;,
-        &quot;host_name&quot;: &quot;splunk.com&quot;
-    }
-
-    conn.logger.setLevel(logging.INFO)
-    conn.initialize()
-    return conn
-</code></pre>
-<p>Now, create a test file in your <code>tests/</code> directory, eg. <code>test_dns_connector.py</code> and define your tests eg.</p>
-<pre><code class="language-python">import json
-import os, sys
-
-sys.path.insert(0, os.getcwd()) 
-import pytest
-
-from dns_connector import DNSConnector
-
-def test_lookup_domain(configured_connector: DNSConnector):
-
-    in_json = {
-            &quot;parameters&quot;: {
-                &quot;identifier&quot;: &quot;forward_lookup&quot;,
-                &quot;domain&quot;: &quot;splunk.com&quot;
-            }
-    }
-
-    # Execute Action
-    action_result_str = configured_connector._handle_action(json.dumps(in_json), None)
-    action_result = json.loads(action_result_str)
-
-    # Assertion
-    assert action_result[0][&quot;summary&quot;][&quot;record_info&quot;] == &quot;52.5.196.118&quot;
-
-def test_lookup_ip(configured_connector: DNSConnector):
-
-    in_json = {
-            &quot;parameters&quot;: {
-                &quot;identifier&quot;: &quot;reverse_lookup&quot;,
-                &quot;ip&quot;: &quot;52.5.196.118&quot;
-            }
-    }
-
-    # Execute Action
-    action_result_str = configured_connector._handle_action(json.dumps(in_json), None)
-    action_result = json.loads(action_result_str)
-
-    # Assertion
-    assert action_result[0][&quot;summary&quot;][&quot;cannonical_name&quot;] == &quot;118.196.5.52.in-addr.arpa.&quot;
-</code></pre>
-<h2 id="mocking-network-calls">Mocking Network Calls</h2>
-<p>In this case, the configured DNS server is publicly accessible, so running the action is not an issue. But what if that is not the case? Consider using <a href="https://requests-mock.readthedocs.io/en/latest/overview.html">requests-mock</a> or <a href="https://vcrpy.readthedocs.io/en/latest/">vcrpy</a> in your tests to avoid doing actual network calls as part of your CI exution.</p>
 
               
             </article>

@@ -315,8 +315,6 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           Getting Started
@@ -333,8 +331,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -343,22 +339,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    Getting Started
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     Installation
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    Configuration
+        
+          <li class="md-nav__item">
+  <a href="#connector-fixture" class="md-nav__link">
+    Connector Fixture
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
+  <a href="#mocking-network-calls" class="md-nav__link">
+    Mocking Network Calls
   </a>
   
 </li>
@@ -486,8 +495,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -496,22 +503,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    Getting Started
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     Installation
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    Configuration
+        
+          <li class="md-nav__item">
+  <a href="#connector-fixture" class="md-nav__link">
+    Connector Fixture
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
+  <a href="#mocking-network-calls" class="md-nav__link">
+    Mocking Network Calls
   </a>
   
 </li>
@@ -534,18 +554,93 @@
 
 
 
-<h1 id="getting-started">Getting started</h1>
-<h2 id="installation">Installation</h2>
-<pre><code>pip install pytest-splunk-soar-connectors
-</code></pre>
-<h2 id="configuration">Configuration</h2>
-<p>Within your tests suites <code>conftest.py</code> (<a href="https://docs.pytest.org/en/6.2.x/fixture.html#conftest-py-sharing-fixtures-across-multiple-files">What is conftest.py?</a>) load the plugin:</p>
-<pre><code>...
-pytest_plugins = (&quot;splunk-soar-connectors&quot;,) 
-...
-</code></pre>
-<h2 id="usage">Usage</h2>
-<p>It is recommended to create a pytest fixture for the connector under test.</p>
+  <h1>Getting Started</h1>
+
+<h2 id="getting-started">Getting Started</h2>
+<p>As this plugin is not yet published to the Python Package Index (PyPi) we'll outline the steps needed to install the plugin from its Github repository. </p>
+<p>It is strongly recommended to install this package in your projects <a href="https://docs.python.org/3/library/venv.html#:~:text=A%20virtual%20environment%20is%20a,part%20of%20your%20operating%20system.">virtual environment</a> as part of your local development. The commands below assume you are located in the the SOAR connectors root directory. If you already have an existing virtual environment, you can skip these steps.</p>
+<h3 id="installation">Installation</h3>
+<div class="highlight"><pre><span></span><code>python3 -m venv venv
+<span class="nb">source</span> venv/bin/activate
+pip install git+https://github.com/splunk/pytest-splunk-soar-connectors
+</code></pre></div>
+<h3 id="connector-fixture">Connector Fixture</h3>
+<p>Create a <code>tests</code> directory in the root of your connector project if you have not already and create a <code>conftest.py</code> within.
+<div class="highlight"><pre><span></span><code>mkdir tests &amp;&amp; cd tests
+touch conftest.py
+</code></pre></div></p>
+<p>Open the created <code>conftest.py</code> in your favorite editor and create a new <a href="https://docs.pytest.org/en/6.2.x/fixture.html">pytest fixture</a> for your connector. The example below uses the Connector from the <a href="https://github.com/splunk-soar-connectors/dns">DNS App</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c1"># Add root directory to path</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span> 
+
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="c1"># Load pytest-splunk-soar-connectors plugin</span>
+<span class="n">pytest_plugins</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;splunk-soar-connectors&quot;</span><span class="p">)</span>
+
+<span class="c1"># Replace this with the import for your connector</span>
+<span class="kn">from</span> <span class="nn">dns_connector</span> <span class="kn">import</span> <span class="n">DNSConnector</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s1">&#39;function&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">configured_connector</span><span class="p">():</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">DNSConnector</span><span class="p">()</span>
+
+    <span class="c1"># Define the asset configuration to be used </span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dns_server&quot;</span><span class="p">:</span> <span class="s2">&quot;8.8.8.8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;host_name&quot;</span><span class="p">:</span> <span class="s2">&quot;splunk.com&quot;</span>
+    <span class="p">}</span>
+
+    <span class="n">conn</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">conn</span>
+</code></pre></div>
+<p>Now, create a test file in your <code>tests/</code> directory, eg. <code>test_dns_connector.py</code> and define your tests eg.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span> 
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="kn">from</span> <span class="nn">dns_connector</span> <span class="kn">import</span> <span class="n">DNSConnector</span>
+
+<span class="k">def</span> <span class="nf">test_lookup_domain</span><span class="p">(</span><span class="n">configured_connector</span><span class="p">:</span> <span class="n">DNSConnector</span><span class="p">):</span>
+
+    <span class="n">in_json</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span> <span class="s2">&quot;forward_lookup&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="s2">&quot;splunk.com&quot;</span>
+            <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Execute Action</span>
+    <span class="n">action_result_str</span> <span class="o">=</span> <span class="n">configured_connector</span><span class="o">.</span><span class="n">_handle_action</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">in_json</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">action_result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">action_result_str</span><span class="p">)</span>
+
+    <span class="c1"># Assertion</span>
+    <span class="k">assert</span> <span class="n">action_result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;record_info&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;52.5.196.118&quot;</span>
+
+<span class="k">def</span> <span class="nf">test_lookup_ip</span><span class="p">(</span><span class="n">configured_connector</span><span class="p">:</span> <span class="n">DNSConnector</span><span class="p">):</span>
+
+    <span class="n">in_json</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span> <span class="s2">&quot;reverse_lookup&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ip&quot;</span><span class="p">:</span> <span class="s2">&quot;52.5.196.118&quot;</span>
+            <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Execute Action</span>
+    <span class="n">action_result_str</span> <span class="o">=</span> <span class="n">configured_connector</span><span class="o">.</span><span class="n">_handle_action</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">in_json</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">action_result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">action_result_str</span><span class="p">)</span>
+
+    <span class="c1"># Assertion</span>
+    <span class="k">assert</span> <span class="n">action_result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;cannonical_name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;118.196.5.52.in-addr.arpa.&quot;</span>
+</code></pre></div>
+<h2 id="mocking-network-calls">Mocking Network Calls</h2>
+<p>In this case, the configured DNS server is publicly accessible, so running the action is not an issue. But what if that is not the case? Consider using <a href="https://requests-mock.readthedocs.io/en/latest/overview.html">requests-mock</a> or <a href="https://vcrpy.readthedocs.io/en/latest/">vcrpy</a> in your tests to avoid doing actual network calls as part of your CI exution.</p>
 
               
             </article>

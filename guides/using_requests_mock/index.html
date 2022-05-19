@@ -380,9 +380,40 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Using requests-mock
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Using requests-mock
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example-test" class="md-nav__link">
+    Example Test
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -444,6 +475,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example-test" class="md-nav__link">
+    Example Test
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -461,7 +507,36 @@
 
 
 <h1 id="using-requests-mocks">Using requests-mocks</h1>
-<p>asd</p>
+<p>The <a href="https://requests-mock.readthedocs.io/en/latest/overview.html">requests-mock</a> package allows to intercept network requests and provide prepared responses to avoid network dependencies in tests. Please refer to its documentation for full background on what it can be used for.</p>
+<h2 id="example-test">Example Test</h2>
+<p>The Connector from the <a href="https://github.com/splunk-soar-connectors/redmine">Redmine App</a> is instantiated in <code>conftest.py</code> (not shown) with a <code>base_url</code> pointing to <code>https://localhost:3000</code>. Now in the test, we can use the <code>requests_mock</code> fixture to provide a prepared response to avoid running a local Redmine instance.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">test_list_tickets</span><span class="p">(</span><span class="n">configured_connector</span><span class="p">:</span> <span class="n">RedmineConnector</span><span class="p">,</span> <span class="n">requests_mock</span><span class="p">):</span>
+
+    <span class="c1"># Mock HTTP response</span>
+    <span class="n">sample_issues</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;issues&quot;</span><span class="p">:</span> <span class="p">[{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="p">},{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="p">}]</span>
+    <span class="p">}</span>
+
+    <span class="n">requests_mock</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:3000/issues.json&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">sample_issues</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">})</span>
+
+    <span class="c1"># Configure action parameters</span>
+    <span class="n">in_json</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span> <span class="s2">&quot;list_tickets&quot;</span>
+            <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Execute Action</span>
+    <span class="n">action_result_str</span> <span class="o">=</span> <span class="n">configured_connector</span><span class="o">.</span><span class="n">_handle_action</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">in_json</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">action_result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">action_result_str</span><span class="p">)</span>
+
+    <span class="c1"># Assertion</span>
+    <span class="k">assert</span> <span class="n">action_result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;num_tickets&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span>
+</code></pre></div>
 
               
             </article>
