@@ -29,3 +29,10 @@ mkdocs serve -a localhost:9090
 ```
 
 You should be able to access the local documentation at [https://localhost:9090](http://localhost:9090).
+
+## NOTICE File
+
+Generate from requirements.txt
+```
+pip-licenses --format=markdown  > NOTICE.md
+```
