@@ -16,4 +16,4 @@ can be tested in total isolation, without a development SOAR instance or even ac
 
 ## Prerequisites
 
-- Python3 (3.7, 3.8, 3.9, 3.10)
+- Python 3 (3.7, 3.8, 3.9, 3.10)

@@ -14,7 +14,13 @@ theme:
 
 repo_url: https://github.com/dfederschmidt/pytest-splunk-soar-connectors
 
-pages:
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
 - Home:
   - Overview: index.md
   - Getting Started: getting_started.md
