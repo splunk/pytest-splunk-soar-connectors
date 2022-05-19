@@ -2,14 +2,21 @@
 
 A pytest plugin to perform unit testing for Splunk SOAR Apps. Please [review the documentation](https://splunk.github.io/pytest-splunk-soar-connectors/) on how to use this plugin.
 
-## Installation
+## Local Development
 
-It is recommended to create a virtual environment for the App under test. Run the below commands to install the package locally into the python environment.
+It is recommended to create a virtual environment for this plugin. Run the below commands to install the package locally into a Python environment.
 
 ```
 git clone https://github.com/dfederschmidt/pytest-splunk-soar-connectors
-cd pytest-splunk-soar-connectors
-pip install -e .
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Running Tests
+
+```
+pytest
 ```
 
 ## Building the Documentation
@@ -17,6 +24,7 @@ pip install -e .
 ```
 python3 -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
 mkdocs serve -a localhost:9090
 ```
 
