@@ -1,5 +1,5 @@
 from phantom_mock import phantom
-from phantom.base_connector import BaseConnector
+from phantom_mock.phantom.base_connector import BaseConnector
 import logging
 import pytest
 
