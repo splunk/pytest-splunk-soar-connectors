@@ -14,6 +14,10 @@ can be tested in total isolation, without a development SOAR instance or even ac
 - Work well with existing connector implementations
 - Create test suites that can run as part of CI 
 
+## Limitations
+
+- Vault interaction is currently not fully implemented (WIP)
+
 ## Prerequisites
 
 - Python 3 (3.7, 3.8, 3.9, 3.10)
