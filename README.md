@@ -1,10 +1,6 @@
 # pytest-splunk-soar-connectors
 
-A plugin to perform unit testing for Splunk SOAR Apps. 
-
-## Features
-
-* Mocks for most Splunk SOAR Python App Authoring APIs, especially `BaseConnector`
+A pytest plugin to perform unit testing for Splunk SOAR Apps. Please [review the documentation](https://splunk.github.io/pytest-splunk-soar-connectors/) on how to use this plugin.
 
 ## Installation
 
@@ -15,10 +11,6 @@ git clone https://github.com/dfederschmidt/pytest-splunk-soar-connectors
 cd pytest-splunk-soar-connectors
 pip install -e .
 ```
-
-## Usage
-
-Please refer to the documentation in `docs` or consider following the [Building the Documentation](#building-the-documentation) section to get a local docs server up and running.
 
 ## Building the Documentation
 
