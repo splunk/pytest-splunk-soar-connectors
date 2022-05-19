@@ -2,7 +2,7 @@ import json
 import logging
 from phantom_mock import phantom
 from tests.conftest import MyDNSConnector, my_dns_connector
-from phantom.action_result import ActionResult
+from phantom_mock.phantom.action_result import ActionResult
 
 def test_app_error():
     assert phantom.app.APP_ERROR == False
