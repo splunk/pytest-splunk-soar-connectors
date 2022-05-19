@@ -4,10 +4,14 @@ pytest-splunk-soar-connectors is a plugin for the [pytest](https://docs.pytest.o
 
 ## Quick Start
 
-Within your projects virtual environment, run:
+As this plugin is not yet published to the Python Package Index (PyPi) we'll outline the steps needed to install the plugin from its Github repository. 
+
+It is strongly recommended to install this package in your projects [virtual environment](https://docs.python.org/3/library/venv.html#:~:text=A%20virtual%20environment%20is%20a,part%20of%20your%20operating%20system.) as part of your local development.
+
 ```
-pip install pytest-splunk-soar-connectors
 ```
+
+
 
 ## What does the plugin do?
 

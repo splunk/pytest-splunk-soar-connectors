@@ -21,7 +21,7 @@ setup(
     license='Apache Software License 2.0',
     url='https://github.com/dfederschmidt/pytest-splunk-soar-connectors',
     description='A simple plugin to use with pytest',
-    long_description=read('README.rst'),
+    long_description="A simple plugin to use with pytest",
     py_modules=['pytest_splunk_soar_connectors'],
     python_requires='>=3.5',
     install_requires=['pytest>=3.5.0', 'rich'],
