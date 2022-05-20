@@ -1,7 +1,7 @@
 import pprint
 
 class ActionResult:
-    def __init__(self, param=None):
+    def __init__(self, param={}):
         self.param = param
         self.message = ""
         self.status = False
@@ -69,6 +69,10 @@ class ActionResult:
     def update_extra_data(self, item):
         self._extra_data.extend(item)
 
+    def add_exception_details(exception):
+        # TODO
+        pass
+
     def update_summary(self, summary):
         self.summary = summary
         self.logger.info(
@@ -85,6 +89,21 @@ class ActionResult:
     def get_status(self):
         return self.status
 
+    def append_to_message(self, message_str):
+        self.message += message_str
+
+    def get_summary(self):
+        return self.summary
+
+    def get_param(self):
+        return self.param
+
+    def update_param(self, param):
+        self.param.update(param)
+
+    def set_param(self, param):
+        self.param = param
+
     def get_dict(self) -> dict:
         return {
             "context": {},
@@ -99,3 +118,6 @@ class ActionResult:
         if isinstance(other, ActionResult):
             return hash(str(self.data)) == hash(str(other.data))
         return False
+
+
+
