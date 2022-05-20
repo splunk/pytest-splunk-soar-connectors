@@ -1,5 +1,6 @@
 import pprint
 
+
 class ActionResult:
     def __init__(self, param={}):
         self.param = param
@@ -118,6 +119,3 @@ class ActionResult:
         if isinstance(other, ActionResult):
             return hash(str(self.data)) == hash(str(other.data))
         return False
-
-
-
