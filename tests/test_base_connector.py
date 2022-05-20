@@ -15,7 +15,7 @@ def test_debug_print(capsys, my_dns_connector):
 
 
 def test_connector_has_asset_id(my_dns_connector):
-    assert my_dns_connector.get_asset_id() == "1abc234"
+    assert my_dns_connector.get_asset_id() == "default-asset-id"
 
 
 def test_connector_has_base_url(my_dns_connector):
