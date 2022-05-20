@@ -17,6 +17,7 @@ can be tested in total isolation, without a development SOAR instance or even ac
 ## Limitations
 
 - Vault interaction is currently not fully implemented (WIP)
+- `get_app_config` is not implemented
 
 ## Prerequisites
 
