@@ -41,9 +41,6 @@ class Vault:
 
         return True, "added file to vault", vault_id
 
-    def info(self, vault_id, ):
-        pass
-
     def get_vault_tmp_dir(self) -> pathlib.Path:
         return self.root / Path("tmpdir")
 
