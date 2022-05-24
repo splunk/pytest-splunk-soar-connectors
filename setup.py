@@ -22,9 +22,9 @@ setup(
     url='https://github.com/dfederschmidt/pytest-splunk-soar-connectors',
     description='A simple plugin to use with pytest',
     long_description="A simple plugin to use with pytest",
-    py_modules=['pytest_splunk_soar_connectors'],
+    py_modules=['pytest_splunk_soar_connectors', 'phantom_mock'],
     python_requires='>=3.5',
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["tests", "docs"]),
     install_requires=['pytest>=3.5.0', 'rich'],
     classifiers=[
         'Development Status :: 4 - Beta',
