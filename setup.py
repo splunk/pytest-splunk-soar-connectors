@@ -26,7 +26,7 @@ setuptools.setup(
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
     include_package_data=True,
-    install_requires=['pytest>=3.5.0', 'rich'],
+    install_requires=['pytest>=3.5.0', 'rich', 'typing_extensions'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Pytest',
