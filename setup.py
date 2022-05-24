@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import codecs
+import pathlib
 import setuptools
 
-
-def read(fname):
-    file_path = os.path.join(os.path.dirname(__file__), fname)
-    return codecs.open(file_path, encoding='utf-8').read()
-
+def read(*args):
+    file_path = pathlib.Path(__file__).parent.joinpath(*args)
+    with file_path.open(encoding="utf-8") as f:
+        return f.read()
 
 setuptools.setup(
     name='pytest-splunk-soar-connectors',
@@ -21,7 +19,8 @@ setuptools.setup(
     license='Apache Software License 2.0',
     url='https://github.com/dfederschmidt/pytest-splunk-soar-connectors',
     description='A simple plugin to use with pytest',
-    long_description="A simple plugin to use with pytest",
+    long_description=read("README.md"),
+    long_description_content_type="text/markdown",
     py_modules=['pytest_splunk_soar_connectors', 'phantom_mock'],
     python_requires='>=3.5',
     packages=setuptools.find_packages("src"),
