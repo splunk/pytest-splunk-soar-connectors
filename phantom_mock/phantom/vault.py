@@ -10,7 +10,7 @@ import hashlib
 
 class Vault:
     def __init__(self) -> None:
-        self.root = tempfile.mkdtemp()
+        self.root = tempfile.TemporaryDirectory()
         self.files: Dict[str, Dict] = {}
 
     def isempty(self):
@@ -18,12 +18,14 @@ class Vault:
 
     def add(self, container, file_location, file_name, metadata, trace):
         container_dir = self.root / Path(str(container))
+        container_dir.mkdir(parents=True, exist_ok=True)
+
         file_name = Path(file_location).name
         target_location = container_dir / Path(file_name)
 
         shutil.copyfile(file_location, target_location)
 
-        with target_location.open("rb^") as f:
+        with target_location.open("rb") as f:
             file_hash = hashlib.md5()
             while chunk := f.read(8192):
                 file_hash.update(chunk)
@@ -50,19 +52,14 @@ __VAULT: Vault = Vault()
 
 def vault_add(container, file_location, file_name=None, metadata=None, trace=False):
 
-    __VAULT.add(container, file_location, file_name, metadata, trace)
+    return __VAULT.add(container, file_location, file_name, metadata, trace)
 
-    success = True
-    message = ""
-    vault_id = ""
-
-    return success, message, vault_id
 
 def vault_info(
     vault_id, file_name=None, container_id=None, remove_all=False, trace=False
 ):
 
-    if not __VAULT.isempty():
+    if __VAULT.isempty():
         raise Exception("Cannot get file info from uninitialized Vault")
 
     file = __VAULT.files.get(vault_id)

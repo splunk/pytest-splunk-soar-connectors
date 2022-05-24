@@ -3,7 +3,7 @@
 
 import os
 import codecs
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -24,6 +24,7 @@ setup(
     long_description="A simple plugin to use with pytest",
     py_modules=['pytest_splunk_soar_connectors'],
     python_requires='>=3.5',
+    packages=find_packages(exclude=["tests"]),
     install_requires=['pytest>=3.5.0', 'rich'],
     classifiers=[
         'Development Status :: 4 - Beta',
