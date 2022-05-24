@@ -17,7 +17,7 @@ class Vault:
         return len(self.files) == 0
 
     def add(self, container, file_location, file_name, metadata, trace):
-        container_dir = self.root / Path(str(container))
+        container_dir = self.root.name / Path(str(container))
         container_dir.mkdir(parents=True, exist_ok=True)
 
         file_name = Path(file_location).name
@@ -44,7 +44,7 @@ class Vault:
         return True, "added file to vault", vault_id
 
     def get_vault_tmp_dir(self) -> pathlib.Path:
-        return self.root / Path("tmpdir")
+        return self.root.name / Path("tmpdir")
 
 
 __VAULT: Vault = Vault()

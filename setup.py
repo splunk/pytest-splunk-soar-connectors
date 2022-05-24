@@ -3,7 +3,7 @@
 
 import os
 import codecs
-from setuptools import setup, find_packages
+import setuptools
 
 
 def read(fname):
@@ -11,7 +11,7 @@ def read(fname):
     return codecs.open(file_path, encoding='utf-8').read()
 
 
-setup(
+setuptools.setup(
     name='pytest-splunk-soar-connectors',
     version='0.1.0',
     author='Daniel Federschmidt',
@@ -24,7 +24,9 @@ setup(
     long_description="A simple plugin to use with pytest",
     py_modules=['pytest_splunk_soar_connectors', 'phantom_mock'],
     python_requires='>=3.5',
-    packages=find_packages(exclude=["tests", "docs"]),
+    packages=setuptools.find_packages("src"),
+    package_dir={"": "src"},
+    include_package_data=True,
     install_requires=['pytest>=3.5.0', 'rich'],
     classifiers=[
         'Development Status :: 4 - Beta',
