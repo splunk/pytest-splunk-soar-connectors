@@ -1,4 +1,5 @@
 import logging
+from this import d
 from phantom_mock import phantom
 
 
@@ -16,3 +17,7 @@ def test_is_fail():
 
 def test_is_fail_false():
     assert phantom.is_fail(phantom.app.APP_SUCCESS) is False
+
+def test_get_req_value():
+    dic = {"hello": "world"}
+    assert phantom.app.get_req_value(dic, "hello") == "world"
