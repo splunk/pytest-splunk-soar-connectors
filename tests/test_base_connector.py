@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 import logging
+from unittest.mock import patch
 from phantom_mock import phantom
 from pytest_splunk_soar_connectors.models import Artifact
 from src.pytest_splunk_soar_connectors.models import InputJSON
@@ -140,3 +141,21 @@ def test_handle_action_input_multiple_params(my_dns_connector: MyDNSConnector) -
     # Assertion
     assert action_result[0]["data"][0]["in_ip"] == "8.8.8.8"
     assert action_result[1]["data"][0]["in_ip"] == "1.1.1.1"
+
+@patch('tests.conftest.call_me_only_once')
+def test_duplicate_calls(mock, my_dns_connector):
+    conn: MyDNSConnector = my_dns_connector
+
+    in_json = {
+        "identifier": "forward_lookup",
+        "parameters": [
+            {
+                "ip": "52.5.196.118"
+            }
+        ]
+    }
+
+    conn._handle_action(json.dumps(in_json), None)
+    assert conn.get_action_identifier() == "forward_lookup"
+    mock.assert_called_once()
+    assert in_json['parameters'][0] in mock.call_args.args

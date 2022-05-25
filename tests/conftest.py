@@ -38,8 +38,13 @@ class MyDNSConnector(BaseConnector):
         response = {"in_ip": param["ip"]}
         action_result.add_data(response)
 
+        call_me_only_once(param)
         return phantom.APP_SUCCESS
 
+def call_me_only_once(param):
+    """Ensure that base_connector.handle_action
+     only calls outgoing functions once."""
+    pass
 
 @pytest.fixture()
 def my_dns_connector():
