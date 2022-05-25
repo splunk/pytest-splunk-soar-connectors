@@ -48,7 +48,6 @@ def configured_connector():
     }
 
     conn.logger.setLevel(logging.INFO)
-    conn.initialize()
     return conn
 ```
 
