@@ -3,6 +3,7 @@ import json
 import logging
 from phantom_mock import phantom
 from pytest_splunk_soar_connectors.models import Artifact
+from src.pytest_splunk_soar_connectors.models import InputJSON
 from tests.conftest import MyDNSConnector
 from phantom_mock.phantom.action_result import ActionResult
 
@@ -82,3 +83,47 @@ def test_save_artifacts(my_dns_connector: MyDNSConnector):
 
     my_dns_connector.save_artifacts([test_artifact])
     assert len(my_dns_connector._BaseConnector__artifacts) == 1
+
+def test_handle_action_input(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [
+            {
+                "ip": "8.8.8.8"
+            }
+        ],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    action_result = json.loads(action_result_str)
+
+    # Assertion
+    assert action_result[0]["data"][0]["in_ip"] == "8.8.8.8"
+
+def test_handle_action_input_multiple_params(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [
+            {
+                "ip": "8.8.8.8"
+            },
+            {
+                "ip": "1.1.1.1"
+            }
+        ],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    action_result = json.loads(action_result_str)
+
+    # Assertion
+    assert action_result[0]["data"][0]["in_ip"] == "8.8.8.8"
+    assert action_result[1]["data"][0]["in_ip"] == "1.1.1.1"

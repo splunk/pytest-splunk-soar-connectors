@@ -56,6 +56,7 @@ Now, create a test file in your `tests/` directory, eg. `test_dns_connector.py` 
 ```python
 import json
 import os, sys
+from pytest_splunk_soar_connectors.models import InputJSON
 
 sys.path.insert(0, os.getcwd()) 
 import pytest
@@ -64,11 +65,16 @@ from dns_connector import DNSConnector
 
 def test_lookup_domain(configured_connector: DNSConnector):
 
-    in_json = {
-            "parameters": {
-                "identifier": "forward_lookup",
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [
+            {
                 "domain": "splunk.com"
             }
+        ],
+        "environment_variables": {},
     }
 
     # Execute Action
@@ -80,11 +86,19 @@ def test_lookup_domain(configured_connector: DNSConnector):
 
 def test_lookup_ip(configured_connector: DNSConnector):
 
-    in_json = {
-            "parameters": {
-                "identifier": "reverse_lookup",
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "reverse_lookup",
+        "config": {},
+        "parameters": [
+            {
                 "ip": "52.5.196.118"
+            },
+            {
+                "ip": "8.8.8.8"
             }
+        ],
+        "environment_variables": {},
     }
 
     # Execute Action

@@ -1,5 +1,6 @@
 from phantom_mock import phantom
 from phantom_mock.phantom.base_connector import BaseConnector
+from phantom_mock.phantom.action_result import ActionResult
 import logging
 import pytest
 
@@ -31,6 +32,12 @@ class MyDNSConnector(BaseConnector):
         pass
 
     def _handle_forward_lookup(self, param):
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        response = {"in_ip": param["ip"]}
+        action_result.add_data(response)
+
         return phantom.APP_SUCCESS
 
 

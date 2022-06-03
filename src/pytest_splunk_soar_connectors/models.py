@@ -1,10 +1,7 @@
 from dataclasses import dataclass
-import random
 from typing import Any, Dict, List, Literal, Optional, TypedDict
 from typing_extensions import NotRequired
-import uuid
 import datetime
-import sys
 
 @dataclass
 class Container:
@@ -27,3 +24,14 @@ class Artifact(TypedDict):
     id: Optional[int]
     source_data_identifier: Optional[str]
     version: NotRequired[int]
+
+class InputEnvVar(TypedDict):
+    type: str
+    value: str
+
+class InputJSON(TypedDict):
+    action: str
+    config: dict
+    identifier: str
+    parameters: list[dict]
+    environment_variables: dict[str, InputEnvVar]

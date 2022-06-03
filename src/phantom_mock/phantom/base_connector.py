@@ -331,8 +331,7 @@ class BaseConnector(ABC):
         if json_file is None:
             return self.set_status(phantom.APP_ERROR, "Could not load Connector")
 
-        self.debug_print("App Json:", self.__app_json)
-        self.app_id = self.__action_json["appid"]
+        self.app_id = self.__app_json["appid"]
 
         return phantom.APP_SUCCESS
 
@@ -348,7 +347,6 @@ class BaseConnector(ABC):
     def handle_cancel(self):
         pass
 
-    @abstractmethod
     def finalize(self):
         pass
 
@@ -366,6 +364,8 @@ class BaseConnector(ABC):
     def _handle_action(self, in_json, handle) -> str:
 
         self.__action_json = json.loads(in_json)
+        self.__input_json = json.loads(in_json)
+
         success = self._load_app_json()
         with TemporaryDirectory() as tmp_dir:
             self.state_dir = tmp_dir
@@ -373,11 +373,11 @@ class BaseConnector(ABC):
             for param in self.__action_json["parameters"]:
                 self.__current_param = param
                 try:
-                    self.action_identifier = self.__action_json["parameters"][
+                    self.action_identifier = self.__action_json[
                         "identifier"
                     ]
                     self.initialize()
-                    self.handle_action(self.__action_json["parameters"])
+                    self.handle_action(self.__current_param)
                 except KeyboardInterrupt:
                     self.__was_cancelled = True
                     self.handle_cancel()
