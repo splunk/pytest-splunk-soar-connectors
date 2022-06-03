@@ -38,7 +38,20 @@ def test_save_progresss(capsys, my_dns_connector):
 def test_get_action_identifier(my_dns_connector):
     conn: MyDNSConnector = my_dns_connector
 
-    in_json = {"parameters": {"identifier": "forward_lookup", "ip": "52.5.196.118"}}
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [
+            {
+                "ip": "8.8.8.8"
+            },
+            {
+                "ip": "1.1.1.1"
+            }
+        ],
+        "environment_variables": {},
+    }
 
     conn._handle_action(json.dumps(in_json), None)
     assert conn.get_action_identifier() == "forward_lookup"
