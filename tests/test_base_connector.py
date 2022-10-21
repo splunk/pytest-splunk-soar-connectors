@@ -1,11 +1,11 @@
 from datetime import datetime
 import json
 import logging
-from phantom_mock import phantom
+import phantom
 from pytest_splunk_soar_connectors.models import Artifact
 from src.pytest_splunk_soar_connectors.models import InputJSON
 from tests.conftest import MyDNSConnector
-from phantom_mock.phantom.action_result import ActionResult
+from phantom.action_result import ActionResult
 
 
 def test_debug_print(capsys, my_dns_connector):

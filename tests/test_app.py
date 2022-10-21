@@ -1,7 +1,6 @@
 import logging
 from this import d
-from phantom_mock import phantom
-
+import phantom
 
 def test_app_error():
     assert phantom.app.APP_ERROR is False

@@ -2,14 +2,14 @@
 import sys
 import pytest
 
-import phantom_mock.phantom
-import phantom_mock.phantom.app
-import phantom_mock.phantom.vault
-import phantom_mock.phantom.action_result
-from phantom_mock.phantom import base_connector
+import phantom
+import phantom.app
+import phantom.vault
+import phantom.action_result
+from phantom import base_connector
 
-sys.modules['phantom'] = phantom_mock.phantom
-sys.modules['phantom.app'] = phantom_mock.phantom.app
-sys.modules['phantom.vault'] = phantom_mock.phantom.vault
-sys.modules['phantom.action_result'] = phantom_mock.phantom.action_result
+sys.modules['phantom'] = phantom
+sys.modules['phantom.app'] = phantom.app
+sys.modules['phantom.vault'] = phantom.vault
+sys.modules['phantom.action_result'] = phantom.action_result
 sys.modules['phantom.base_connector'] = base_connector

@@ -1,6 +1,6 @@
-from phantom_mock import phantom
-from phantom_mock.phantom.base_connector import BaseConnector
-from phantom_mock.phantom.action_result import ActionResult
+import phantom
+from phantom.base_connector import BaseConnector
+from phantom.action_result import ActionResult
 import logging
 import pytest
 

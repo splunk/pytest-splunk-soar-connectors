@@ -1,5 +1,5 @@
 from pathlib import Path
-from phantom_mock.phantom import vault
+from phantom import vault
 import os
 
 def test_add_file_to_vault():
