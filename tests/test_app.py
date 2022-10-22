@@ -1,5 +1,3 @@
-import logging
-from this import d
 import phantom
 
 def test_app_error():

@@ -3,9 +3,11 @@ from typing import Any, Dict, List, Literal, Optional, TypedDict
 from typing_extensions import NotRequired
 import datetime
 
+
 @dataclass
 class Container:
     id: int
+
 
 class Artifact(TypedDict):
     name: str
@@ -25,9 +27,11 @@ class Artifact(TypedDict):
     source_data_identifier: Optional[str]
     version: NotRequired[int]
 
+
 class InputEnvVar(TypedDict):
     type: str
     value: str
+
 
 class InputJSON(TypedDict):
     action: str

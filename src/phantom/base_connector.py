@@ -122,7 +122,7 @@ class BaseConnector(ABC):
             return self.state
         except Exception as e:
             print(e)
-            return None
+            return {}
 
     def get_state(self):
         return self.state
@@ -373,9 +373,7 @@ class BaseConnector(ABC):
             for param in self.__action_json["parameters"]:
                 self.__current_param = param
                 try:
-                    self.action_identifier = self.__action_json[
-                        "identifier"
-                    ]
+                    self.action_identifier = self.__action_json["identifier"]
                     self.initialize()
                     self.handle_action(self.__current_param)
                 except KeyboardInterrupt:

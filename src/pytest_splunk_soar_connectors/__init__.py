@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import sys
-import pytest
 
 import phantom
 import phantom.app
