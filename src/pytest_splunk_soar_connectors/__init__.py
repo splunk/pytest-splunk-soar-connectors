@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+from . import models
 
 import phantom
 import phantom.app
