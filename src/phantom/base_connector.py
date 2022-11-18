@@ -1,16 +1,18 @@
-import json
-import logging
-from typing import List
-import uuid
-from rich.logging import RichHandler
 import glob
 import inspect
+import json
+import logging
 import os
 import pprint
-from tempfile import NamedTemporaryFile, TemporaryDirectory
+import uuid
 from abc import ABC, abstractmethod
+from tempfile import NamedTemporaryFile, TemporaryDirectory
+from typing import List
+
+from rich.logging import RichHandler
 
 from pytest_splunk_soar_connectors.models import Artifact
+
 from . import app as phantom
 
 

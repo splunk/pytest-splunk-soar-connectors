@@ -77,10 +77,7 @@ class ActionResult:
     def update_summary(self, summary):
         self.summary = summary
         self.logger.info(
-            "ActionResult.update_summary() - Summary (next line):\n{}".format(
-                self.pp.pformat(summary)
-            )
-        )
+            "ActionResult.update_summary() - Summary (next line):\n{}".format(self.pp.pformat(summary)))
         return self.summary
 
     def set_summary(self, summary):

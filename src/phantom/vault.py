@@ -1,7 +1,9 @@
+# pylint: disable=protected-access
+
 from pathlib import Path
 import pathlib
 import tempfile
-from typing import Dict
+from typing import Dict, Union
 import shutil
 import hashlib
 
@@ -16,7 +18,16 @@ class VirtualVault:
     def isempty(self):
         return len(self.files) == 0
 
-    def add(self, container, file_location, file_name, metadata, trace):
+    def add(
+        self,
+        container: Union[dict, int],
+        file_location: str,
+        file_name: str,
+        metadata: dict,
+        trace: bool = False,
+    ):
+        print(f"trace: {trace}")
+
         container_dir = self.root.name / Path(str(container))
         container_dir.mkdir(parents=True, exist_ok=True)
 
@@ -25,9 +36,9 @@ class VirtualVault:
 
         shutil.copyfile(file_location, target_location)
 
-        with target_location.open("rb") as f:
+        with target_location.open("rb") as f_to_read:
             file_hash = hashlib.md5()
-            while chunk := f.read(8192):
+            while chunk := f_to_read.read(8192):
                 file_hash.update(chunk)
 
         vault_id = file_hash.hexdigest()
@@ -44,9 +55,9 @@ class VirtualVault:
         return True, "Success", vault_id
 
     def delete(self, vault_id):
-        file = self.files[vault_id]
+        file_to_delete = self.files[vault_id]
         del self.files[vault_id]
-        return True, file
+        return True, file_to_delete
 
     def get_vault_tmp_dir(self) -> pathlib.Path:
         return self.root.name / Path("tmpdir")
@@ -58,17 +69,11 @@ class VaultAPI:
     def __init__(self) -> None:
         self._vault = VirtualVault()
 
-    def create_attachment(
-        self, file_contents: str, container_id: int, file_name: str, metadata: dict
-    ):
+    def create_attachment(self, file_contents: str, container_id: int, file_name: str, metadata: dict):
         pass
 
-    def add_attachment(
-        self, local_path: str, container_id: int, file_name: str, metadata=dict
-    ):
-        succeeded, added_to_vault, id = self.__vault.add(
-            container_id, local_path, file_name, metadata, trace=False
-        )
+    def add_attachment(self, local_path: str, container_id: int, file_name: str, metadata=dict):
+        succeeded, _, _ = self._vault.add(container_id, local_path, file_name, metadata, trace=False)
 
         return {
             "succeeded": succeeded,
@@ -87,43 +92,61 @@ class VaultAPI:
 # Vault API
 Vault: VaultAPI = VaultAPI()
 
-# Rules API
+# Rules API https://docs.splunk.com/Documentation/SOAR/current/PlaybookAPI/VaultAPI
 
 
-def vault_add(container, file_location, file_name=None, metadata=None, trace=False):
+def vault_add(
+    container: Union[dict, int],
+    file_location: str,
+    file_name: Union[str, None] = None,
+    metadata: Union[dict, None] = None,
+    trace: bool = False,
+):
+    """
+    The container parameter deviates from the real Vault Automation API where it is optional. 
+
+    Due to the structure of the Mock, it's non-trivial and probably not worth the
+    effort to mirror that functionality. Most calling code on github.com/splunk-soar-connectors
+    provides that parameter.
+
+    Ideally, you can simply use self.get_container_id() in the calling code to get the ID.
+    """
+    if isinstance(container, dict):
+        container = container["id"]
+
+    if not file_name:
+        file_name = Path(file_location).name
+
+    if not metadata:
+        metadata = {}
+
     return Vault._vault.add(container, file_location, file_name, metadata, trace=trace)
 
 
-def vault_delete(
-    vault_id: str, file_name: str, container_id: int, remove_all: bool, trace: bool
-):
-    success, file = Vault._vault.delete(vault_id)
+def vault_delete(vault_id: str, file_name: str, container_id: int, remove_all: bool, trace: bool):
+    print(f"file_name={file_name} container_id={container_id} remove_all={remove_all} trace={trace}")
+
+    success, deleted_file = Vault._vault.delete(vault_id)
 
     return {
         "success": success,
         "message": "deleted from vault",
-        "deleted_files": [file],
+        "deleted_files": [deleted_file],
     }
 
 
-def vault_info(
-    vault_id, file_name=None, container_id=None, remove_all=False, trace=False
-):
+def vault_info(vault_id, file_name=None, container_id=None, trace=False):
+    print(f"file_name={file_name} container_id={container_id} trace={trace}")
 
-    if __VAULT.isempty():
+    if Vault._vault.isempty():
         raise Exception("Cannot get file info from uninitialized Vault")
 
-    file = __VAULT.files.get(vault_id)
+    file = Vault._vault.files.get(vault_id)
 
     if not file:
         return False, "file not found in vault", []
 
     success = True
     message = "successfully retrieved file from vault"
-    vault_info = file
 
-    return success, message, vault_info
-
-
-def add_attachment(local_path: str, container_id: int, file_name: str, metadata: dict):
-    return __VAULT.add(container_id, local_path, file_name, metadata, trace=None)
+    return success, message, file
