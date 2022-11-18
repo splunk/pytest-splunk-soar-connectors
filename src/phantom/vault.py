@@ -60,7 +60,12 @@ class VirtualVault:
         return True, file_to_delete
 
     def get_vault_tmp_dir(self) -> pathlib.Path:
-        return self.root.name / Path("tmpdir")
+        path = self.root.name / Path("tmpdir")
+        path.mkdir(exist_ok=True)
+        return path
+
+def get_vault_tmp_dir():
+    return str(Vault._vault.get_vault_tmp_dir())
 
 
 class VaultAPI:
@@ -70,23 +75,12 @@ class VaultAPI:
         self._vault = VirtualVault()
 
     def create_attachment(self, file_contents: str, container_id: int, file_name: str, metadata: dict):
-        pass
-
-    def add_attachment(self, local_path: str, container_id: int, file_name: str, metadata=dict):
-        succeeded, _, _ = self._vault.add(container_id, local_path, file_name, metadata, trace=False)
-
-        return {
-            "succeeded": succeeded,
-        }
-
-    def get_vault_tmp_dir(self):
-        pass
-
-    def get_file_path(self, vault_id: int):
-        pass
-
-    def get_file_info(self, vault_id: int, file_name: str, container_id: int):
-        pass
+        
+        tmp_file = self._vault.get_vault_tmp_dir() / "tmpfile"
+        tmp_file.touch(exist_ok=True)
+        tmp_file.write_text(file_contents)
+        
+        self._vault.add(container=container_id, file_location=str(tmp_file), file_name=file_name, metadata=metadata)
 
 
 # Vault API
