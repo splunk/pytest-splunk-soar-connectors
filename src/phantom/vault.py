@@ -64,6 +64,7 @@ class VirtualVault:
         path.mkdir(exist_ok=True)
         return path
 
+
 def get_vault_tmp_dir():
     return str(Vault._vault.get_vault_tmp_dir())
 
@@ -75,11 +76,11 @@ class VaultAPI:
         self._vault = VirtualVault()
 
     def create_attachment(self, file_contents: str, container_id: int, file_name: str, metadata: dict):
-        
+
         tmp_file = self._vault.get_vault_tmp_dir() / "tmpfile"
         tmp_file.touch(exist_ok=True)
         tmp_file.write_text(file_contents)
-        
+
         self._vault.add(container=container_id, file_location=str(tmp_file), file_name=file_name, metadata=metadata)
 
 
@@ -97,7 +98,7 @@ def vault_add(
     trace: bool = False,
 ):
     """
-    The container parameter deviates from the real Vault Automation API where it is optional. 
+    The container parameter deviates from the real Vault Automation API where it is optional.
 
     Due to the structure of the Mock, it's non-trivial and probably not worth the
     effort to mirror that functionality. Most calling code on github.com/splunk-soar-connectors

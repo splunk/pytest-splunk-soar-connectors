@@ -1,17 +1,21 @@
+import logging
 import pprint
 
 
 class ActionResult:
-    def __init__(self, param={}):
-        self.param = param
+    def __init__(self, param):
+        if not param:
+            self.param = {}
+        else:
+            self.param = param
         self.message = ""
         self.status = False
         self.data = []
         self._debug_data = []
         self._extra_data = []
         self.summary = {}
-        self.logger = None
-        self.pp = pprint.PrettyPrinter(indent=4)
+        self.logger = logging.getLogger(__name__)
+        self.pretty_printer = pprint.PrettyPrinter(indent=4)
         return
 
     def set_logger(self, logger):
@@ -24,19 +28,14 @@ class ActionResult:
         self.status = status
         self.message = message
         self.logger.info(
-            "ActionResult.set_status() - Status: {}; Message: {}; Exception: {}".format(
-                status, message, str(error)
-            )
+            "ActionResult.set_status() - Status: %s; Message: %s; Exception: %s", status, message, str(error)
         )
         return status
 
     def add_data(self, data):
         self.data.append(data)
         self.logger.info(
-            "ActionResult.add_data() - Data (next line):\n{}".format(
-                self.pp.pformat(self.data)
-            )
-        )
+            "ActionResult.add_data() - Data (next line):\n%s", self.pretty_printer.pformat(self.data))
         return
 
     def update_data(self, data):
@@ -70,14 +69,15 @@ class ActionResult:
     def update_extra_data(self, item):
         self._extra_data.extend(item)
 
-    def add_exception_details(exception):
+    def add_exception_details(self, exception):
         # TODO
         pass
 
     def update_summary(self, summary):
         self.summary = summary
         self.logger.info(
-            "ActionResult.update_summary() - Summary (next line):\n{}".format(self.pp.pformat(summary)))
+            "ActionResult.update_summary() - Summary (next line):\n%s", self.pretty_printer.pformat(summary)
+        )
         return self.summary
 
     def set_summary(self, summary):

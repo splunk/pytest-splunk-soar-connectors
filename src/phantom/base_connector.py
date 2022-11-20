@@ -8,6 +8,7 @@ import uuid
 from abc import ABC, abstractmethod
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import List
+import pathlib
 
 from rich.logging import RichHandler
 
@@ -28,6 +29,7 @@ class BaseConnector(ABC):
         # app settings
         self.app_id = "default-app-id"
         self.app_json_file_loc = None
+        self.__app_json = None
 
         # log settings
         self.log_path = "debug_log.log"
@@ -36,11 +38,17 @@ class BaseConnector(ABC):
 
         # current container settings
         self.container_id = 123
+        self.container_artifact_id = 1234
+
+        # state
+        self.state_file_location = NamedTemporaryFile().name
+        self.state_dir = TemporaryDirectory()
 
         # the following is an example
         self.container_info = {
             "1": {"container_info_would_go_here": True},
             "2": {"container_info_would_go_here": True},
+            "123": {"container_info_would_go_here": True},
         }
         # used when saving containers
         self.starting_container_id = 2
@@ -51,9 +59,6 @@ class BaseConnector(ABC):
         # product information settings
         self.product_install_id = "1234"
         self.product_version = "4.5.15370"
-
-        # state settings
-        self.state_file_location = NamedTemporaryFile().name
 
         # polling settings
         self.poll_now = False
@@ -67,9 +72,15 @@ class BaseConnector(ABC):
         self.state = None
         self.status = None
         self.action_results = []
-        self.pp = pprint.PrettyPrinter(indent=4)
+        self.pretty_printer = pprint.PrettyPrinter(indent=4)
         self.action_identifier = ""
+
+        # pylint: disable=unused-private-member
         self.__action_run_id = str(uuid.uuid4())
+        self.__action_json = None
+
+        self.summary = {}
+        self.__was_cancelled = False
 
         # Mock test helpers - those are not part of the BaseConnector API but have been added here
         self.__progress = []
@@ -106,7 +117,7 @@ class BaseConnector(ABC):
     def get_container_info(self, container_id=None):
         if not container_id:
             container_id = self.container_id
-        return True, self.container_info[container_id], "200"
+        return True, self.container_info[str(container_id)], "200"
 
     def get_product_installation_id(self):
         return self.product_install_id
@@ -116,14 +127,14 @@ class BaseConnector(ABC):
 
     def load_state(self):
         try:
-            with open(self.state_file_location, "r+") as state_file:
+            with open(self.state_file_location, "r+", encoding="utf-8") as state_file:
                 self.state = json.loads(state_file.read() or "{}")
-            self.logger.info(
-                "load_state() - State: {}".format(self.pp.pformat(self.state))
-            )
+            self.logger.info("load_state() - State: %s", self.pretty_printer.pformat(self.state))
             return self.state
-        except Exception as e:
-            print(e)
+        # pylint:disable=broad-except
+        # TODO: This may be problematic if the state exists, but loading it actually fails
+        except Exception as exc:
+            print(exc)
             return {}
 
     def get_state(self):
@@ -131,9 +142,9 @@ class BaseConnector(ABC):
 
     def save_state(self, state=None):
         self.state = state or self.state
-        with open(self.state_file_location, "w+") as state_file:
+        with open(self.state_file_location, "w+", encoding="utf-8") as state_file:
             state_file.write(json.dumps(self.state))
-        self.logger.info("save_state() - State: {}".format(self.pp.pformat(self.state)))
+        self.logger.info("save_state() - State: %s", self.pretty_printer.pformat(self.state))
         return
 
     def save_artifact(self, artifact):
@@ -146,80 +157,68 @@ class BaseConnector(ABC):
         return_val = []
         for artifact in artifacts:
             self.__artifacts.append(artifact)
-            return_val.append(
-                [phantom.APP_SUCCESS, "Artifact saved", self.starting_artifact_id]
-            )
+            return_val.append([phantom.APP_SUCCESS, "Artifact saved", self.starting_artifact_id])
             self.starting_artifact_id += 1
 
         return return_val
 
-    def save_container(self, container):
+    def save_container(self, _):
         container_id = self.container_artifact_id
         self.starting_container_id += 1
         return (phantom.APP_SUCCESS, "Container saved", container_id)
 
     def save_containers(self, containers):
         return_val = []
-        for container in containers:
-            return_val.append(
-                [phantom.APP_SUCCESS, "Container saved", self.starting_container_id]
-            )
+        for _ in containers:
+            return_val.append([phantom.APP_SUCCESS, "Container saved", self.starting_container_id])
             self.starting_container_id += 1
 
         return return_val
 
     def debug_print(self, message, dump_obj=None):
-        self.logger.debug(
-            "BaseConnector.debug_print - Message: {}; Object (next line):\n{}".format(
-                message, (self.pp.pformat(dump_obj) if dump_obj else "")
-            )
-        )
+        out = ""
+
+        if dump_obj:
+            out = self.pretty_printer.pformat(dump_obj)
+
+        self.logger.debug("BaseConnector.debug_print - Message: %s; Object (next line):\n%s", message, out)
         return
 
     def error_print(self, message, dump_obj=None):
-        self.logger.error(
-            "BaseConnector.error_print - Message: {}; Object (next line):\n{}".format(
-                message, (self.pp.pformat(dump_obj) if dump_obj else "")
-            )
-        )
+        out = ""
+
+        if dump_obj:
+            out = self.pretty_printer.pformat(dump_obj)
+
+        self.logger.error("BaseConnector.error_print - Message: %s; Object (next line):%s", message, out)
         return
 
     def set_status(self, status, message=None, error=None):
         self.status = status
         self.message = message
-        self.logger.info(
-            "BaseConnector.set_status - State: {}; Message: {};".format(status, message)
-        )
+        self.logger.info("BaseConnector.set_status - State: %s; Message: %s; Error: %s", status, message, error)
         return status
 
     def append_to_message(self, message):
         self.message += message
-        self.logger.info(
-            "BaseConnector.append_to_message - Message: {}".format(message)
-        )
+        self.logger.info("BaseConnector.append_to_message - Message: %s", message)
         return
 
     def set_status_save_progress(self, status, message):
         self.status = status
         self.progress_message = message
-        self.logger.info(
-            "BaseConnector.set_status_save_progress - Status: {}, Message: {}".format(
-                status, message
-            )
-        )
+        self.logger.info("BaseConnector.set_status_save_progress - Status: %s, Message: %s", status, message)
         return self.status
 
     def send_progress(self, message):
         self.progress_message = message
-        self.logger.info("BaseConnector.send_progress - Progress: {}".format(message))
+        self.logger.info("BaseConnector.send_progress - Progress: %s", message)
         return
 
     def save_progress(self, message, more=None):
         self.progress_message = message
         self.__progress.append(message)
-        self.logger.info(
-            "BaseConnector.save_progress - Progress: {}; More: {}".format(message, more)
-        )
+        self.logger.info("BaseConnector.save_progress - Progress: %s; More: %s", message, more)
         return
 
     def add_action_result(self, action_result):
@@ -254,10 +253,12 @@ class BaseConnector(ABC):
         return self.app_id
 
     def get_app_config(self):
-        return self.__app_json["app_config"]
+        if self.__app_json:
+            return self.__app_json
+        raise Exception("Could not retrieve app config")
 
     def get_ca_bundle(self):
-        return NotImplemented
+        raise NotImplementedError
 
     def get_app_json(self):
         return self.__app_json
@@ -268,15 +269,16 @@ class BaseConnector(ABC):
     def update_summary(self, summary):
         self.summary = summary
 
+    # pylint:disable=unused-argument,redefined-builtin
     def set_validator(self, type=None, validation_function=None):
-        # TODO: Make this do something. For now, it does nothing
+        # TODO: Validators are a rarely used feature and not implemented yet.
         return None
 
     def _is_app_json(self, json_file_path, connector_py):
 
-        self.debug_print("Connector class File: {0}".format(connector_py))
+        self.debug_print(f"Connector class File: {connector_py}")
         # Load the file
-        with open(json_file_path) as app_json_file:
+        with open(json_file_path, encoding="utf-8") as app_json_file:
             try:
                 app_json = json.load(app_json_file)
                 connector_file = app_json.get("main_module")  # pylint: disable=E1103
@@ -285,12 +287,11 @@ class BaseConnector(ABC):
                     if connector_file == connector_py:
                         self.__app_json = app_json
                         return True
-            except Exception as e:
+            # pylint:disable=broad-except
+            except Exception as exc:
+                reason = getattr(exc, "message", str(exc))
                 self.debug_print(
-                    "Failed to load JSON: {0}, reason: {1}".format(
-                        json_file_path, getattr(e, "message", str(e))
-                    )
-                )
+                    f"Failed to load JSON: {json_file_path}, reason: {reason}")
                 return False
 
         return False
@@ -299,27 +300,26 @@ class BaseConnector(ABC):
         dirpath = os.path.dirname(inspect.getfile(self.__class__))
         # get the directory of the derived class
         dirpath = os.path.dirname(inspect.getfile(self.__class__))
-        self.debug_print("Derived class dir: '{}'".format(dirpath))
+        self.debug_print(f"Derived class dir: '{dirpath}'")
         if not dirpath:
             dirpath = os.curdir
 
         # Create the glob to the json file
-        json_file_glob = "{0}/*.json".format(dirpath)
+        json_file_glob = f"{dirpath}/*.json"
 
         # Check if it exists
         files_matched = glob.glob(json_file_glob)
 
         # Get the connector file
         connector_py_file = inspect.getfile(self.__class__)
-        self.debug_print("connector_py_file: {0}".format(connector_py_file))
-
+        self.debug_print(f"connector_py_file: {connector_py_file}")
         # Split into head and tail
         connector_py = os.path.split(connector_py_file)
 
         # get the tail, which will be the file name
         connector_py = connector_py[1]
 
-        self.debug_print("connector_py: {0}".format(connector_py))
+        self.debug_print(f"connector_py: {connector_py}")
 
         # The extension of the file could be pyc or py
         connector_py = connector_py[: connector_py.find(".")]
@@ -333,18 +333,24 @@ class BaseConnector(ABC):
         if json_file is None:
             return self.set_status(phantom.APP_ERROR, "Could not load Connector")
 
+        if not self.__app_json:
+            return self.set_status(phantom.APP_ERROR, "Could not find App ID in JSON")
+
         self.app_id = self.__app_json["appid"]
 
         return phantom.APP_SUCCESS
 
     def get_state_file_path(self):
-        self.state_dir + "statefile"
+        state_file_path = pathlib.Path(self.state_dir.name) / pathlib.Path("statefile")
+        return str(state_file_path)
 
     def get_state_dir(self):
         return self.state_dir
 
     def get_current_param(self):
-        return self.__action_json["parameters"]
+        if self.__action_json:
+            return self.__action_json["parameters"]
+        return {}
 
     def handle_cancel(self):
         pass
@@ -357,7 +363,7 @@ class BaseConnector(ABC):
         pass
 
     @abstractmethod
-    def handle_action(self, parameters):
+    def handle_action(self, param):
         pass
 
     def validate_parameters(self, parameters):
@@ -366,27 +372,26 @@ class BaseConnector(ABC):
     def _handle_action(self, in_json, handle) -> str:
 
         self.__action_json = json.loads(in_json)
-        self.__input_json = json.loads(in_json)
 
-        success = self._load_app_json()
-        with TemporaryDirectory() as tmp_dir:
-            self.state_dir = tmp_dir
+        _ = self._load_app_json()
 
-            for param in self.__action_json["parameters"]:
-                self.__current_param = param
-                try:
-                    self.action_identifier = self.__action_json["identifier"]
-                    self.initialize()
-                    self.handle_action(self.__current_param)
-                except KeyboardInterrupt:
-                    self.__was_cancelled = True
-                    self.handle_cancel()
-                except Exception as error:
-                    logging.exception(error)
-                    self.handle_exception(error)
+        # pylint:disable=broad-except
+        for param in self.__action_json["parameters"]:
+            current_param = param
+            try:
+                self.action_identifier = self.__action_json["identifier"]
+                self.initialize()
+                self.handle_action(current_param)
+            except KeyboardInterrupt:
+                self.__was_cancelled = True
+                self.handle_cancel()
+            except Exception as error:
+                logging.exception(error)
+                self.handle_exception(error)
 
         self.logger.info(json.dumps(list(r.get_dict() for r in self.action_results)))
         self.finalize()
+        self.state_dir.cleanup()
         return json.dumps(list(r.get_dict() for r in self.action_results))
 
     def handle_exception(self, exception: Exception):

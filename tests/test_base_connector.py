@@ -1,18 +1,29 @@
-from datetime import datetime
+# pylint: disable=protected-access
+
 import json
 import logging
-import phantom
+from datetime import datetime
+
+from phantom.action_result import ActionResult
 from pytest_splunk_soar_connectors.models import Artifact
 from src.pytest_splunk_soar_connectors.models import InputJSON
 from tests.conftest import MyDNSConnector
-from phantom.action_result import ActionResult
+import pytest
 
 
 def test_debug_print(capsys, my_dns_connector):
     my_dns_connector.logger.setLevel(logging.DEBUG)
     my_dns_connector.debug_print("hello")
-    out, err = capsys.readouterr()
+    out, _ = capsys.readouterr()
     assert "BaseConnector.debug_print" in out
+
+
+def test_error_print(capsys, my_dns_connector):
+    my_dns_connector.logger.setLevel(logging.DEBUG)
+    my_dns_connector.error_print("hello")
+
+    out, _ = capsys.readouterr()
+    assert "BaseConnector.error_print" in out
 
 
 def test_connector_has_asset_id(my_dns_connector):
@@ -28,7 +39,7 @@ def test_connector_get_config(my_dns_connector):
     assert "dns_server" in config
 
 
-def test_save_progresss(capsys, my_dns_connector):
+def test_save_progresss(my_dns_connector):
     conn: MyDNSConnector = my_dns_connector
     conn.logger.setLevel(logging.DEBUG)
     conn.save_progress("my progress")
@@ -42,14 +53,7 @@ def test_get_action_identifier(my_dns_connector):
         "action": "lookup ip",
         "identifier": "forward_lookup",
         "config": {},
-        "parameters": [
-            {
-                "ip": "8.8.8.8"
-            },
-            {
-                "ip": "1.1.1.1"
-            }
-        ],
+        "parameters": [{"ip": "8.8.8.8"}, {"ip": "1.1.1.1"}],
         "environment_variables": {},
     }
 
@@ -97,17 +101,14 @@ def test_save_artifacts(my_dns_connector: MyDNSConnector):
     my_dns_connector.save_artifacts([test_artifact])
     assert len(my_dns_connector._BaseConnector__artifacts) == 1
 
+
 def test_handle_action_input(my_dns_connector: MyDNSConnector) -> None:
 
     in_json: InputJSON = {
         "action": "lookup ip",
         "identifier": "forward_lookup",
         "config": {},
-        "parameters": [
-            {
-                "ip": "8.8.8.8"
-            }
-        ],
+        "parameters": [{"ip": "8.8.8.8"}],
         "environment_variables": {},
     }
 
@@ -117,20 +118,14 @@ def test_handle_action_input(my_dns_connector: MyDNSConnector) -> None:
     # Assertion
     assert action_result[0]["data"][0]["in_ip"] == "8.8.8.8"
 
+
 def test_handle_action_input_multiple_params(my_dns_connector: MyDNSConnector) -> None:
 
     in_json: InputJSON = {
         "action": "lookup ip",
         "identifier": "forward_lookup",
         "config": {},
-        "parameters": [
-            {
-                "ip": "8.8.8.8"
-            },
-            {
-                "ip": "1.1.1.1"
-            }
-        ],
+        "parameters": [{"ip": "8.8.8.8"}, {"ip": "1.1.1.1"}],
         "environment_variables": {},
     }
 
@@ -140,3 +135,144 @@ def test_handle_action_input_multiple_params(my_dns_connector: MyDNSConnector) -
     # Assertion
     assert action_result[0]["data"][0]["in_ip"] == "8.8.8.8"
     assert action_result[1]["data"][0]["in_ip"] == "1.1.1.1"
+
+
+def test_append_to_message(my_dns_connector: MyDNSConnector) -> None:
+
+    my_dns_connector.append_to_message("first ")
+    my_dns_connector.append_to_message("second")
+
+    assert my_dns_connector.message == "first second"
+
+
+from unittest.mock import MagicMock
+
+
+def test_finalize_called(my_dns_connector: MyDNSConnector) -> None:
+    """Tests whether finalize is called once after the execution"""
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [{"ip": "8.8.8.8"}],
+        "environment_variables": {},
+    }
+
+    my_dns_connector.finalize = MagicMock(return_value=3)
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    my_dns_connector.finalize.assert_called_once()
+
+
+def test_get_app_config(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [{"ip": "8.8.8.8"}],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    assert "actions" in my_dns_connector.get_app_config()
+
+
+def test_get_app_id(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [{"ip": "8.8.8.8"}],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    assert "876ab991-313e-48e7-bccd-e8c9650c239d" == my_dns_connector.get_app_id()
+
+
+def test_get_app_json(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [{"ip": "8.8.8.8"}],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    app_json = my_dns_connector.get_app_json()
+
+    assert app_json is not None
+    assert "actions" in app_json
+
+
+def test_get_asset_id(my_dns_connector: MyDNSConnector) -> None:
+    assert my_dns_connector.asset_id == "default-asset-id"
+
+
+def test_get_ca_bundle(my_dns_connector: MyDNSConnector) -> None:
+    with pytest.raises(NotImplementedError):
+        my_dns_connector.get_ca_bundle()
+
+
+def test_get_connector_id(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [{"ip": "8.8.8.8"}],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    assert "876ab991-313e-48e7-bccd-e8c9650c239d" == my_dns_connector.get_connector_id()
+
+
+def test_get_container_id(my_dns_connector: MyDNSConnector) -> None:
+    assert my_dns_connector.get_container_id() == 123
+
+
+def test_get_container_info(my_dns_connector: MyDNSConnector) -> None:
+    _, info, _ = my_dns_connector.get_container_info(container_id=123)
+    assert info.get("container_info_would_go_here")
+
+
+def test_get_current_param(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [{"ip": "8.8.8.8"}],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    assert len(my_dns_connector.get_current_param()) == 1
+
+
+def test_get_product_installation_id(my_dns_connector: MyDNSConnector) -> None:
+    product_id = my_dns_connector.get_product_installation_id()
+    assert product_id == "1234"
+
+
+def test_get_product_version(my_dns_connector: MyDNSConnector) -> None:
+    product_id = my_dns_connector.get_product_version()
+    assert product_id == "4.5.15370"

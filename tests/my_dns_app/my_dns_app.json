@@ -1,0 +1,330 @@
+{
+    "appid": "876ab991-313e-48e7-bccd-e8c9650c239d",
+    "name": "My DNS App",
+    "description": "This app implements investigative actions that return DNS Records for the object queried",
+    "publisher": "Pytest",
+    "package_name": "phantom_my_dns",
+    "type": "information",
+    "license": "Copyright (c) 2016-2022 Splunk Inc.",
+    "main_module": "my_dns_app_connector.py",
+    "app_version": "1.0.0",
+    "product_vendor": "Generic",
+    "product_name": "DNS",
+    "product_version_regex": ".*",
+    "min_phantom_version": "5.1.0",
+    "fips_compliant": false,
+    "latest_tested_versions": [
+        "N/A (Note: tested using Google Public DNS server 8.8.8.8 as of 11/2020)"
+    ],
+    "python_version": "3",
+    "logo": "logo_splunk.svg",
+    "logo_dark": "logo_splunk_dark.svg",
+    "test_metadata": {
+        "playbook_names": [
+            "phantom_dns"
+        ]
+    },
+    "pip_dependencies": {
+        "wheel": [
+            {
+                "module": "dns",
+                "input_file": "dnspython/dnspython-1.16.0-py2.py3-none-any.whl"
+            }
+        ]
+    },
+    "configuration": {
+        "dns_server": {
+            "description": "IP of the DNS server for lookups",
+            "data_type": "string",
+            "order": 0
+        },
+        "host_name": {
+            "description": "Hostname to be used in test connectivity",
+            "data_type": "string",
+            "default": "www.splunk.com",
+            "order": 1
+        }
+    },
+    "actions": [
+        {
+            "action": "test connectivity",
+            "description": "Validate the asset configuration for connectivity",
+            "type": "test",
+            "identifier": "test_asset_connectivity",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "lookup domain",
+            "description": "Query DNS records for a Domain or Host Name",
+            "verbose": "A list of record <b>types</b> to be resolved is supplied, one of which the user may choose as the value for the <b>type</b> parameter, these are:<br><ul><li>A</li><li>AAAA</li><li>CNAME</li><li>HINFO</li><li>ISDN</li><li>MX</li><li>NS</li><li>SOA</li><li>TXT</li></ul>When taking a lookup domain action from a Playbook, the author can look up arbitrary DNS record types by supplying the desired record type as a string for the <b>type</b> parameter.",
+            "type": "investigate",
+            "identifier": "forward_lookup",
+            "read_only": true,
+            "parameters": {
+                "domain": {
+                    "description": "Record to resolve",
+                    "data_type": "string",
+                    "contains": [
+                        "host name",
+                        "domain"
+                    ],
+                    "primary": true,
+                    "required": true,
+                    "order": 0
+                },
+                "type": {
+                    "description": "DNS Record Type",
+                    "data_type": "string",
+                    "value_list": [
+                        "A",
+                        "AAAA",
+                        "CNAME",
+                        "HINFO",
+                        "ISDN",
+                        "MX",
+                        "NS",
+                        "SOA",
+                        "TXT"
+                    ],
+                    "order": 1
+                }
+            },
+            "render": {
+                "type": "custom",
+                "width": 10,
+                "height": 5,
+                "view": "dns_view.display_ips",
+                "title": "Lookup Domain"
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.domain",
+                    "data_type": "string",
+                    "contains": [
+                        "host name",
+                        "domain"
+                    ],
+                    "example_values": [
+                        "test.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.record_info_objects.*.record_info",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "example_values": [
+                        "122.122.122.122"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.record_infos",
+                    "data_type": "string",
+                    "example_values": [
+                        "122.122.122.122"
+                    ],
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.cannonical_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "phantomtest.com.",
+                        "test.com."
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.canonical_name",
+                    "column_order": 3,
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary.hostname",
+                    "column_name": "Hostname",
+                    "column_order": 2,
+                    "data_type": "string",
+                    "contains": [
+                        "host name",
+                        "domain"
+                    ],
+                    "example_values": [
+                        "ffobaaar.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.record_info",
+                    "column_name": "IP Address",
+                    "column_order": 1,
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "example_values": [
+                        "122.122.122.122"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_record_infos",
+                    "column_order": 0,
+                    "data_type": "numeric",
+                    "example_values": [
+                        1,
+                        6
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "None of DNS query names exist: ['ffobaaar.com.', 'ffobaaar.com.localdomain.']",
+                        "Record info: 54.239.25.192, Total record infos: 6, Cannonical name: amazon.com."
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "lookup ip",
+            "description": "Query Reverse DNS records for an IP",
+            "verbose": "The <b>lookup ip</b> action takes an IP address parameter. The IP address (IPv4 or IPv6) will be looked up against the appropriate reverse lookup DNS records, and any associate hostname(s) will be returned. Only <b>PTR</b> type lookups are returned.",
+            "type": "investigate",
+            "identifier": "reverse_lookup",
+            "read_only": true,
+            "parameters": {
+                "ip": {
+                    "description": "IP to resolve",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "primary": true,
+                    "required": true,
+                    "order": 0
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "DNS Lookup",
+                "type": "table",
+                "height": 2
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.ip",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "example_values": [
+                        "122.122.122.122",
+                        "123.123.123.123"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary.cannonical_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "122.122.122.122.in-addr.arpa."
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.canonical_name",
+                    "column_order": 2,
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary.hostname",
+                    "column_name": "Hostname",
+                    "column_order": 1,
+                    "data_type": "string",
+                    "contains": [
+                        "host name",
+                        "domain"
+                    ],
+                    "example_values": [
+                        "ec2-52-91-186-198.compute-1.test.com."
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.ip",
+                    "column_name": "IP Address",
+                    "column_order": 0,
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "example_values": [
+                        "122.122.122.122"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Ip: 122.122.122.122\nHostname: ec2-52-91-186-198.compute-1.test.com.\nCannonical name: 122.122.122.122.in-addr.arpa.",
+                        "The DNS query name does not exist: 123.123.123.123.in-addr.arpa."
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        }
+    ]
+}
