@@ -26,9 +26,6 @@ class MyDNSConnector(phantom.base_connector.BaseConnector):
 
         return ret_val
 
-    def finalize(self):
-        pass
-
     def _test_connectivity(self, param):
         action_result = phantom.action_result.ActionResult(dict(param))
 

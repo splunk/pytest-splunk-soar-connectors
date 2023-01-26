@@ -5,12 +5,14 @@ site_author: Daniel Federschmidt
 theme: 
   name: material
   icon:
-    logo: material/snake
+    logo: material/cog
   palette:
     scheme: slate
     primary: green
   features:
-    - navigation.tabs
+    - navigation.instant
+    - navigation.sections
+    - navigation.indexes 
 
 repo_url: https://github.com/dfederschmidt/pytest-splunk-soar-connectors
 
@@ -24,9 +26,9 @@ nav:
 - Home:
   - Overview: index.md
   - Getting Started: getting_started.md
+  - Limitations: limitations.md
 
 - Guides:
   - Overview: guides/index.md
   - Using requests-mock: guides/using_requests_mock.md
   - Using VCR.py: guides/using_vcrpy.md
-- Reference: reference/index.md

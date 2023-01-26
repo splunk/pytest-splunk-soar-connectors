@@ -4,6 +4,7 @@ import json
 import logging
 from datetime import datetime
 
+import phantom
 from phantom.action_result import ActionResult
 from pytest_splunk_soar_connectors.models import Artifact
 from src.pytest_splunk_soar_connectors.models import InputJSON
@@ -14,11 +15,12 @@ import pytest
 def test_debug_print(capsys, my_dns_connector):
     my_dns_connector.logger.setLevel(logging.DEBUG)
     my_dns_connector.debug_print("hello")
+
     out, _ = capsys.readouterr()
     assert "BaseConnector.debug_print" in out
 
 
-def test_error_print(capsys, my_dns_connector):
+def test_error_print(capsys, my_dns_connector: MyDNSConnector):
     my_dns_connector.logger.setLevel(logging.DEBUG)
     my_dns_connector.error_print("hello")
 
@@ -276,3 +278,73 @@ def test_get_product_installation_id(my_dns_connector: MyDNSConnector) -> None:
 def test_get_product_version(my_dns_connector: MyDNSConnector) -> None:
     product_id = my_dns_connector.get_product_version()
     assert product_id == "4.5.15370"
+
+
+def test_load_state_none(my_dns_connector: MyDNSConnector) -> None:
+    ret_val = my_dns_connector.get_state()
+    assert ret_val is None
+
+
+def test_load_state_is_dict(my_dns_connector: MyDNSConnector) -> None:
+    my_dns_connector.load_state()
+    ret_val = my_dns_connector.get_state()
+    assert ret_val == {}
+
+
+def test_get_state_file_path(my_dns_connector: MyDNSConnector) -> None:
+    location = my_dns_connector.state_file_location
+    assert location
+
+
+def test_get_state_dir(my_dns_connector: MyDNSConnector) -> None:
+    location = my_dns_connector.get_state_dir()
+    assert location
+
+
+def test_get_status_success(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "lookup ip",
+        "identifier": "forward_lookup",
+        "config": {},
+        "parameters": [{"ip": "8.8.8.8"}],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    assert my_dns_connector.get_status()
+
+
+def test_get_status_fail(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "test connectivity",
+        "identifier": "test_connectivity",
+        "config": {},
+        "parameters": [{}],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    assert my_dns_connector.get_status() is False
+
+
+def test_get_status_message(my_dns_connector: MyDNSConnector) -> None:
+
+    in_json: InputJSON = {
+        "action": "test connectivity",
+        "identifier": "test_connectivity",
+        "config": {},
+        "parameters": [{}],
+        "environment_variables": {},
+    }
+
+    action_result_str = my_dns_connector._handle_action(json.dumps(in_json), None)
+    _ = json.loads(action_result_str)
+
+    my_dns_connector.set_status(phantom.APP_ERROR, "fail")
+    assert my_dns_connector.get_status_message() == "fail"
