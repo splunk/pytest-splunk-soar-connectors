@@ -70,7 +70,7 @@ def test_add_action_result(my_dns_connector):
     action_result = ActionResult(parameters)
     conn.add_action_result(action_result)
 
-    assert len(conn.action_results) == 1
+    assert len(conn._BaseConnector__action_results) == 1
 
 
 def test_get_action_results(my_dns_connector):
@@ -144,7 +144,7 @@ def test_append_to_message(my_dns_connector: MyDNSConnector) -> None:
     my_dns_connector.append_to_message("first ")
     my_dns_connector.append_to_message("second")
 
-    assert my_dns_connector.message == "first second"
+    assert my_dns_connector._BaseConnector__message == "first second"
 
 
 from unittest.mock import MagicMock

@@ -19,12 +19,12 @@ from . import app as phantom
 
 
 class BaseConnector(ABC):
-    message: str = ""
+    __message: str = ""
 
     def __init__(self):
         # asset configuration settings
         self.config = {}
-        self.action_results = []
+        self.__action_results = []
 
         # other asset settings
         self.asset_id = "default-asset-id"
@@ -70,12 +70,12 @@ class BaseConnector(ABC):
         self.base_url = "https://127.0.0.1"
 
         # internal trackers
-        self.message = ""
-        self.progress_message = ""
-        self.state = None
-        self.status = False
-        self.action_results = []
-        self.pretty_printer = pprint.PrettyPrinter(indent=4)
+        self.__message = ""
+        self.__progress_message = ""
+        self._state = None
+        self.__status = False
+        self.__action_results = []
+        self.__pretty_printer = pprint.PrettyPrinter(indent=4)
         self.action_identifier = ""
 
         # pylint: disable=unused-private-member
@@ -165,14 +165,14 @@ class BaseConnector(ABC):
         """
         try:
             with open(self.state_file_location, "r+", encoding="utf-8") as state_file:
-                self.state = json.loads(state_file.read() or "{}")
-            self.logger.info("load_state() - State: %s", self.pretty_printer.pformat(self.state))
-            return self.state
+                self._state = json.loads(state_file.read() or "{}")
+            self.logger.info("load_state() - State: %s", self.__pretty_printer.pformat(self._state))
+            return self._state
         # pylint:disable=broad-except
         # TODO: This may be problematic if the state exists, but loading it actually fails
         except Exception as exc:
-            if self.state is None:
-                self.state = {}
+            if self._state is None:
+                self._state = {}
             print(exc)
             return {}
 
@@ -182,7 +182,7 @@ class BaseConnector(ABC):
         Returns:
             Union[dict, None]: returns state dict or none
         """
-        return self.state
+        return self._state
 
     def save_state(self, state: dict):
         """Writes a given dictionary to a state file that can be loaded during future app runs. This is especially crucial with ingestion apps. The saved state is unique per asset. An app_version field will be added to the dictionary before saving.
@@ -191,13 +191,13 @@ class BaseConnector(ABC):
             state (dict): The dictionary to write to the state file.
         """
 
-        if self.state:
-            self.state = {**self.state, **state}
+        if self._state:
+            self._state = {**self._state, **state}
         else:
-            self.state = state
+            self._state = state
         with open(self.state_file_location, "w+", encoding="utf-8") as state_file:
-            state_file.write(json.dumps(self.state))
-        self.logger.info("save_state() - State: %s", self.pretty_printer.pformat(self.state))
+            state_file.write(json.dumps(self._state))
+        self.logger.info("save_state() - State: %s", self.__pretty_printer.pformat(self._state))
         return
 
     def save_artifact(self, artifact: Artifact) -> Tuple[bool, str, int]:
@@ -272,7 +272,7 @@ class BaseConnector(ABC):
         out = ""
 
         if dump_obj:
-            out = self.pretty_printer.pformat(dump_obj)
+            out = self.__pretty_printer.pformat(dump_obj)
 
         self.logger.debug("BaseConnector.debug_print - Message: %s; Object (next line):\n%s", tag, out)
         return
@@ -287,7 +287,7 @@ class BaseConnector(ABC):
         out = ""
 
         if dump_obj:
-            out = self.pretty_printer.pformat(dump_obj)
+            out = self.__pretty_printer.pformat(dump_obj)
 
         self.logger.error("BaseConnector.error_print - Message: %s; Object (next line):%s", tag, out)
         return
@@ -303,9 +303,9 @@ class BaseConnector(ABC):
         Returns:
             bool: status
         """
-        self.status = status
+        self.__status = status
         if message:
-            self.message = message
+            self.__message = message
         self.logger.info("BaseConnector.set_status - State: %s; Message: %s; Error: %s", status, message, error)
         return status
 
@@ -315,7 +315,7 @@ class BaseConnector(ABC):
         Args:
             message (str): The string that is to be appended to the existing message
         """
-        self.message += message
+        self.__message += message
         self.logger.info("BaseConnector.append_to_message - Message: %s", message)
         return
 
@@ -330,10 +330,10 @@ class BaseConnector(ABC):
             bool: status that was set
         """
 
-        self.status = status
-        self.progress_message = message
+        self.__status = status
+        self.__progress_message = message
         self.logger.info("BaseConnector.set_status_save_progress - Status: %s, Message: %s", status, message)
-        return self.status
+        return self.__status
 
     def send_progress(self, message: str):
         """Sends a progress message to the Splunk SOAR core. It is written to persistent storage, but is overwritten by the message that comes in through the next send_progress call
@@ -341,7 +341,7 @@ class BaseConnector(ABC):
         Args:
             message (str): message to send
         """
-        self.progress_message = message
+        self.__progress_message = message
         self.logger.info("BaseConnector.send_progress - Progress: %s", message)
         return
 
@@ -352,7 +352,7 @@ class BaseConnector(ABC):
             message (str): The progress message to send to the Splunk Phantom core. Typically, this is a short description of the current task.
             more (str, optional): The various parameters that need to be formatted into the progress_str_config string. Defaults to none.
         """
-        self.progress_message = message
+        self.__progress_message = message
         self.__progress.append(message)
         self.logger.info("BaseConnector.save_progress - Progress: %s; More: %s", message, more)
         return
@@ -367,7 +367,7 @@ class BaseConnector(ABC):
             ActionResult: The ActionResult added to the connector run
         """
         action_result.set_logger(self.logger)
-        self.action_results.append(action_result)
+        self.__action_results.append(action_result)
         return action_result
 
     def remove_action_result(self, action_result: ActionResult) -> ActionResult:
@@ -381,9 +381,9 @@ class BaseConnector(ABC):
             ActionResult: The ActionResult that was removed
         """
 
-        for i, action_result in enumerate(self.action_results):
+        for i, action_result in enumerate(self.__action_results):
             if action_result == action_result:
-                return self.action_results.pop(i)
+                return self.__action_results.pop(i)
         raise Exception("Could not find action Result")
 
     def get_action_results(self) -> List[ActionResult]:
@@ -392,7 +392,7 @@ class BaseConnector(ABC):
         Returns:
             List[ActionResult]: List of action results
         """
-        return self.action_results
+        return self.__action_results
 
     def get_status(self) -> bool:
         """Gets the current status of the connector run. Returns either phantom.APP_SUCCESS or phantom.APP_ERROR.
@@ -400,7 +400,7 @@ class BaseConnector(ABC):
         Returns:
             bool: current status of the connector run
         """
-        return self.status
+        return self.__status
 
     def get_status_message(self) -> str:
         """Gets the current status message of the connector run.
@@ -408,7 +408,7 @@ class BaseConnector(ABC):
         Returns:
             str: current status message
         """
-        return self.message
+        return self.__message
 
     def get_action_identifier(self) -> str:
         """Returns the action identifier that the AppConnector is supposed to run.
@@ -627,7 +627,7 @@ class BaseConnector(ABC):
                 self.action_identifier = self.__action_json["identifier"]
                 self.initialize()
                 ret_val = self.handle_action(current_param)
-                self.status = ret_val
+                self.__status = ret_val
             except KeyboardInterrupt:
                 self.__was_cancelled = True
                 self.handle_cancel()
@@ -635,10 +635,10 @@ class BaseConnector(ABC):
                 logging.exception(error)
                 self.handle_exception(error)
 
-        self.logger.info(json.dumps(list(r.get_dict() for r in self.action_results)))
+        self.logger.info(json.dumps(list(r.get_dict() for r in self.__action_results)))
         self.finalize()
         self.state_dir.cleanup()
-        return json.dumps(list(r.get_dict() for r in self.action_results))
+        return json.dumps(list(r.get_dict() for r in self.__action_results))
 
     def handle_exception(self, exception: Exception):
         raise exception
@@ -657,7 +657,7 @@ class BaseConnector(ABC):
         Returns:
             bool: whether or not the connector run result is failure
         """
-        return phantom.is_fail(self.status)
+        return phantom.is_fail(self.__status)
 
     def is_success(self) -> bool:
         """Returns 'True' if the status of the connector run result is success. Otherwise, it returns as 'False'.
@@ -665,4 +665,4 @@ class BaseConnector(ABC):
         Returns:
             bool: whether or not the connector run result is success
         """
-        return not phantom.is_success(self.status)
+        return not phantom.is_success(self.__status)
