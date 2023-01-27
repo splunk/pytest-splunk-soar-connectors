@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from . import models
+from .plugin import *
 
 import phantom
 import phantom.app

@@ -28,7 +28,7 @@ def test_error_print(capsys, my_dns_connector: MyDNSConnector):
     assert "BaseConnector.error_print" in out
 
 
-def test_connector_has_asset_id(my_dns_connector):
+def test_connector_has_asset_id(my_dns_connector: MyDNSConnector):
     assert my_dns_connector.get_asset_id() == "default-asset-id"
 
 

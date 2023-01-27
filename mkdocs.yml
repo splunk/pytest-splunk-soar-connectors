@@ -5,7 +5,7 @@ site_author: Daniel Federschmidt
 theme: 
   name: material
   icon:
-    logo: material/cog
+    logo: material/file-code
   palette:
     scheme: slate
     primary: green
@@ -25,10 +25,10 @@ markdown_extensions:
 nav:
 - Home:
   - Overview: index.md
-  - Getting Started: getting_started.md
-  - Limitations: limitations.md
-
+  - Installation: installation.md
 - Guides:
-  - Overview: guides/index.md
+  - Getting started: guides/getting_started.md
   - Using requests-mock: guides/using_requests_mock.md
   - Using VCR.py: guides/using_vcrpy.md
+- Reference:
+  - Limitations: limitations.md
