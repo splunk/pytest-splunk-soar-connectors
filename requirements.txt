@@ -87,7 +87,6 @@ pyotp==2.7.0
 pyparsing==3.0.9
 pyrsistent==0.19.2
 pytest==7.2.1
--e git+https://github.com/dfederschmidt/pytest-splunk-soar-connectors@4061c917b3f1e8c8e6cafe749b8c4fdf46d199f5#egg=pytest_splunk_soar_connectors
 python-dateutil==2.8.2
 python-magic==0.4.24
 pytz==2022.1
