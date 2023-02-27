@@ -7,7 +7,6 @@ attrs==22.1.0
 Babel==2.11.0
 backcall==0.2.0
 beautifulsoup4==4.11.1
-black==22.6.0
 bleach==5.0.1
 certifi==2021.10.8
 cffi==1.15.1
