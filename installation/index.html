@@ -13,20 +13,24 @@
       
       
       
+        <link rel="prev" href="..">
       
-      <link rel="icon" href="/assets/images/favicon.png">
+      
+        <link rel="next" href="../guides/getting_started/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
     
     
       
-        <title>pytest-splunk-soar-connectors</title>
+        <title>Installation - pytest-splunk-soar-connectors</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.558e4712.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.558e4712.min.css">
       
         
-        <link rel="stylesheet" href="/assets/stylesheets/palette.2505c338.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
       
       
 
@@ -42,7 +46,7 @@
       
     
     
-    <script>__md_scope=new URL("/",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -66,6 +70,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#prerequisites" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -76,7 +85,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/." title="pytest-splunk-soar-connectors" class="md-header__button md-logo" aria-label="pytest-splunk-soar-connectors" data-md-component="logo">
+    <a href=".." title="pytest-splunk-soar-connectors" class="md-header__button md-logo" aria-label="pytest-splunk-soar-connectors" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41-3.74 3.74m11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41 3.74-3.74Z"/></svg>
@@ -95,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Installation
             
           </span>
         </div>
@@ -174,7 +183,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="pytest-splunk-soar-connectors" class="md-nav__button md-logo" aria-label="pytest-splunk-soar-connectors" data-md-component="logo">
+    <a href=".." title="pytest-splunk-soar-connectors" class="md-nav__button md-logo" aria-label="pytest-splunk-soar-connectors" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41-3.74 3.74m11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41 3.74-3.74Z"/></svg>
@@ -203,16 +212,18 @@
 
   
   
+    
+  
   
     
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
       
       
         
@@ -227,7 +238,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="/.">Home</a>
+          <a href="..">Home</a>
           
             <label for="__nav_1">
               <span class="md-nav__icon md-icon"></span>
@@ -248,11 +259,62 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="/installation/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Installation
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-virtual-environment-optional" class="md-nav__link">
+    Create a virtual environment (optional)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-pytest-splunk-soar-connectors" class="md-nav__link">
+    Install pytest-splunk-soar-connectors
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -309,7 +371,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/guides/getting_started/" class="md-nav__link">
+      <a href="../guides/getting_started/" class="md-nav__link">
         Getting started
       </a>
     </li>
@@ -323,7 +385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/guides/using_requests_mock/" class="md-nav__link">
+      <a href="../guides/using_requests_mock/" class="md-nav__link">
         Using requests-mock
       </a>
     </li>
@@ -337,7 +399,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/guides/using_vcrpy/" class="md-nav__link">
+      <a href="../guides/using_vcrpy/" class="md-nav__link">
         Using VCR.py
       </a>
     </li>
@@ -392,7 +454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/limitations/" class="md-nav__link">
+      <a href="../limitations/" class="md-nav__link">
         Limitations
       </a>
     </li>
@@ -424,6 +486,35 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-virtual-environment-optional" class="md-nav__link">
+    Create a virtual environment (optional)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-pytest-splunk-soar-connectors" class="md-nav__link">
+    Install pytest-splunk-soar-connectors
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -434,8 +525,34 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+  
+  
+
+
+
+  <h1>Installation</h1>
+
+<p>This package is not published to the Python Package Index (PyPi) at this time so we'll outline the steps needed to install the plugin from its Github repository. </p>
+<h4 id="prerequisites">Prerequisites</h4>
+<ul>
+<li>Python 3</li>
+</ul>
+<p>It is strongly recommended to install this package in your projects <a href="https://docs.python.org/3/library/venv.html#:~:text=A%20virtual%20environment%20is%20a,part%20of%20your%20operating%20system.">virtual environment</a> as part of your local development. The commands below assume you are located in the root directory of your SOAR app. If you already have an existing virtual environment, you can skip these steps.</p>
+<h4 id="create-a-virtual-environment-optional">Create a virtual environment (optional)</h4>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</code></pre></div>
+<h4 id="install-pytest-splunk-soar-connectors">Install pytest-splunk-soar-connectors</h4>
+<div class="highlight"><pre><span></span><code>pip install git+https://github.com/splunk/pytest-splunk-soar-connectors
+</code></pre></div>
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -467,10 +584,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "/", "features": ["navigation.instant", "navigation.sections", "navigation.indexes"], "search": "/assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes"], "search": "../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="/assets/javascripts/bundle.51d95adb.min.js"></script>
+      <script src="../assets/javascripts/bundle.51d95adb.min.js"></script>
       
     
   </body>

@@ -13,20 +13,24 @@
       
       
       
+        <link rel="prev" href="../../installation/">
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      
+        <link rel="next" href="../using_requests_mock/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
     
     
       
-        <title>Content - pytest-splunk-soar-connectors</title>
+        <title>Getting started - pytest-splunk-soar-connectors</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.558e4712.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
       
       
 
@@ -42,7 +46,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -67,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#content" class="md-skip">
+        <a href="#preparations" class="md-skip">
           Skip to content
         </a>
       
@@ -81,7 +85,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="pytest-splunk-soar-connectors" class="md-header__button md-logo" aria-label="pytest-splunk-soar-connectors" data-md-component="logo">
+    <a href="../.." title="pytest-splunk-soar-connectors" class="md-header__button md-logo" aria-label="pytest-splunk-soar-connectors" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41-3.74 3.74m11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41 3.74-3.74Z"/></svg>
@@ -100,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Content
+              Getting started
             
           </span>
         </div>
@@ -179,7 +183,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="pytest-splunk-soar-connectors" class="md-nav__button md-logo" aria-label="pytest-splunk-soar-connectors" data-md-component="logo">
+    <a href="../.." title="pytest-splunk-soar-connectors" class="md-nav__button md-logo" aria-label="pytest-splunk-soar-connectors" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41-3.74 3.74m11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41 3.74-3.74Z"/></svg>
@@ -232,7 +236,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="..">Home</a>
+          <a href="../..">Home</a>
           
             <label for="__nav_1">
               <span class="md-nav__icon md-icon"></span>
@@ -255,7 +259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../../installation/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -275,16 +279,18 @@
 
   
   
+    
+  
   
     
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
       
         
@@ -296,7 +302,7 @@
         
       
       
-        <label class="md-nav__link" for="__nav_2" tabindex="0" aria-expanded="false">
+        <label class="md-nav__link" for="__nav_2" tabindex="0" aria-expanded="true">
           Guides
           <span class="md-nav__icon md-icon"></span>
         </label>
@@ -312,11 +318,76 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../guides/getting_started/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Getting started
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Getting started
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#preparations" class="md-nav__link">
+    Preparations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-the-plugin-in-conftest" class="md-nav__link">
+    Loading the plugin in conftest
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-your-connector-fixture" class="md-nav__link">
+    Create your Connector Fixture
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#write-a-simple-test" class="md-nav__link">
+    Write a simple test
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    What's next?
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -328,7 +399,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/using_requests_mock/" class="md-nav__link">
+      <a href="../using_requests_mock/" class="md-nav__link">
         Using requests-mock
       </a>
     </li>
@@ -342,7 +413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/using_vcrpy/" class="md-nav__link">
+      <a href="../using_vcrpy/" class="md-nav__link">
         Using VCR.py
       </a>
     </li>
@@ -397,7 +468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../limitations/" class="md-nav__link">
+      <a href="../../limitations/" class="md-nav__link">
         Limitations
       </a>
     </li>
@@ -428,8 +499,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -438,8 +507,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    
+  <a href="#preparations" class="md-nav__link">
+    Preparations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-the-plugin-in-conftest" class="md-nav__link">
+    Loading the plugin in conftest
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-your-connector-fixture" class="md-nav__link">
+    Create your Connector Fixture
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#write-a-simple-test" class="md-nav__link">
+    Write a simple test
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    What's next?
   </a>
   
 </li>
@@ -463,8 +560,74 @@
 
 
 
-<h1 id="content">Content</h1>
-<h2 id="_1"></h2>
+  <h1>Getting started</h1>
+
+<p>This page will guide you through creating a unit test setup for your SOAR connector. It assumes you successfully installed the package in your projects virtual environment. It also assumes you have <a href="https://docs.pytest.org/en/7.2.x/">pytest</a> installed.</p>
+<h2 id="preparations">Preparations</h2>
+<p>Create a <code>tests</code> directory in the root of your connector project if you have not already and create a <code>conftest.py</code> within that directory.
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>tests<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tests
+touch<span class="w"> </span>conftest.py
+</code></pre></div></p>
+<h2 id="loading-the-plugin-in-conftest">Loading the plugin in conftest</h2>
+<p>In your <code>conftest.py</code> add the plugin to your <code>pytest_plugins</code> definition
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="c1"># Load pytest-splunk-soar-connectors plugin</span>
+<span class="n">pytest_plugins</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;splunk-soar-connectors&quot;</span><span class="p">)</span>
+</code></pre></div></p>
+<h2 id="create-your-connector-fixture">Create your Connector Fixture</h2>
+<p>Create a new <a href="https://docs.pytest.org/en/6.2.x/fixture.html">pytest fixture</a> for your connector. The example below uses the connector from the <a href="https://github.com/splunk-soar-connectors/dns">DNS App</a>. We'll use the <code>configure_connector</code> utility function which takes the connector class and the desired asset settings as input.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">dns_connector</span> <span class="kn">import</span> <span class="n">DNSConnector</span>
+<span class="kn">from</span> <span class="nn">pytest_splunk_soar_connectors</span> <span class="kn">import</span> <span class="n">configure_connector</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;function&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">configured_dns_connector</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">configure_connector</span><span class="p">(</span><span class="n">DNSConnector</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s2">&quot;dns_server&quot;</span><span class="p">:</span> <span class="s2">&quot;8.8.8.8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;host_name&quot;</span><span class="p">:</span> <span class="s2">&quot;splunk.com&quot;</span>
+    <span class="p">})</span>
+</code></pre></div>
+<h2 id="write-a-simple-test">Write a simple test</h2>
+<p>Now, create a test file in your <code>tests/</code> directory, eg. <code>test_dns_connector.py</code>. Pass the fixture (here: <code>configured_dns_connector</code>) as a parameter to your test.
+In order to call the action, the <code>_handle_action</code> method of the connector needs to be called with an <code>InputJSON</code>. The <code>InputJSON</code> is simply 
+a dictionary structure that is initializing the connector run.</p>
+<p><code>_handle_action</code> returns the action results that were created during the run as a string, so they need to be parsed back into a python list before any
+<code>asserts</code> can be done.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pytest_splunk_soar_connectors.models</span> <span class="kn">import</span> <span class="n">InputJSON</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span> 
+
+<span class="kn">from</span> <span class="nn">dns_connector</span> <span class="kn">import</span> <span class="n">DNSConnector</span>
+
+<span class="k">def</span> <span class="nf">test_lookup_domain</span><span class="p">(</span><span class="n">configured_dns_connector</span><span class="p">:</span> <span class="n">DNSConnector</span><span class="p">):</span>
+
+    <span class="n">in_json</span><span class="p">:</span> <span class="n">InputJSON</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;lookup ip&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;identifier&quot;</span><span class="p">:</span> <span class="s2">&quot;forward_lookup&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="s2">&quot;splunk.com&quot;</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;environment_variables&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Execute Action</span>
+    <span class="n">action_result_str</span> <span class="o">=</span> <span class="n">configured_connector</span><span class="o">.</span><span class="n">_handle_action</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">in_json</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">action_result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">action_result_str</span><span class="p">)</span>
+
+    <span class="c1"># Assertion</span>
+    <span class="k">assert</span> <span class="n">action_result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;record_info&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;52.5.196.118&quot;</span>
+</code></pre></div>
+<h2 id="whats-next">What's next?</h2>
+<p>In the above example, the DNS server was accessible over the internet and could be called as part of a test without any authentication required. But 
+how do you write tests where you don't have a live instance to test against? Using <a href="https://requests-mock.readthedocs.io/en/latest/">requests-mock</a> you can 
+write unittests that are fully offline. Read on in <a href="../using_requests_mock/">Using requests-mock</a></p>
 
 
 
@@ -502,10 +665,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes"], "search": "../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.51d95adb.min.js"></script>
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
       
     
   </body>
