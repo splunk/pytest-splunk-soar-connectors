@@ -7,4 +7,5 @@ def configure_connector(connector, configuration):
         conn = connector()
         conn.config = configuration
         conn.logger.setLevel(logging.INFO)
+        return conn
     return make_configured_connector
